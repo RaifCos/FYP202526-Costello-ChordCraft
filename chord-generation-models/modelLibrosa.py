@@ -1,7 +1,7 @@
 import time, json
 import librosa
 import argparse
-import chordProcessing
+from . import chordProcessing
 
 if __name__ == "__main__":
     processStart = time.time()
