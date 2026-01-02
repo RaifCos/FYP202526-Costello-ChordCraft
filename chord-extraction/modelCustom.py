@@ -1,6 +1,5 @@
 import time, json
 import librosa
-import argparse
 import numpy as np
 import chordProcessing
 
@@ -64,14 +63,8 @@ def buildChromagram(stft, sr, fftWindowSize=4096):
     
     return chromagram
 
-if __name__ == "__main__":
+def main(audioPath):
     processStart = time.time()
-
-    # Read in Parameters
-    parser = argparse.ArgumentParser()
-    parser.add_argument("audioPath", help="Input Audio file.")
-    args = parser.parse_args()
-    audioPath = args.audioPath
 
     # Load audio file
     y, sr = librosa.load(audioPath, sr=22050)
@@ -96,4 +89,4 @@ if __name__ == "__main__":
         "chords": chords,
         "processing_time": processingTime
     }
-    print(json.dumps(output, indent=4))
+    return output
