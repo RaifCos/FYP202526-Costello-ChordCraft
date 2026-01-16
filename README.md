@@ -1,12 +1,10 @@
 # :musical_keyboard: ChordCraft
-ChordCraft is an Android Application built to help users identify chordal features in any audio provided.
+ChordCraft is an Android Application built to help users identify chordal features in any audio provided, with the Repository currenlty divided into two main directories.
 
-This Repository is currenlty divided into two main directories:
-
-## :iphone: Application
+## :iphone: /Application
 The ```Application``` directory contains all the code for the ChordCraft Android application, created through the Android Studio IDE.
 
-## 	:guitar: ChordExtraction
+## 	:guitar: /ChordExtraction
 The ```ChordExtraction``` directory contains the Python implementation of three different Automatic Chord Extraction Models:
 - Hardcoded Chromatic Feature Analysis 
 - Librosa Python Library Chromatic Feature Analysis
