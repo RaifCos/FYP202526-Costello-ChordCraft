@@ -3,45 +3,69 @@ package com.example.chordcraft
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
+import androidx.compose.foundation.layout.*
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
+import androidx.compose.ui.*
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.chordcraft.ui.theme.ChordCraftTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
         setContent {
-            ChordCraftTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                        name = "User",
-                        modifier = Modifier.padding(innerPadding)
-                    )
-                }
-            }
+            Structure()
         }
     }
 }
 
 @Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name, welcome to Chord Craft!",
-        modifier = modifier
-    )
+fun Structure() {
+    ChordCraftTheme {
+        // A surface container using the 'background' color from the theme
+        Surface(
+            modifier = Modifier.fillMaxSize(),
+            color = MaterialTheme.colorScheme.background
+        ) {
+            GreetingText(
+                "Welcome to ChordCraft",
+                "chord extraction made easy.",
+                modifier = Modifier
+                    .padding(32.dp)
+            )
+        }
+    }
 }
 
-@Preview(showBackground = true)
 @Composable
-fun GreetingPreview() {
-    ChordCraftTheme {
-        Greeting("User")
+fun GreetingText(txtA: String, txtB: String, modifier: Modifier = Modifier) {
+    Column(
+        verticalArrangement = Arrangement.Center,
+        modifier = modifier
+    ) {
+        Text(
+            text = txtA,
+            fontSize = 50.sp,
+            lineHeight = 60.sp,
+            textAlign = TextAlign.Center
+        )
+        Text(
+            text = txtB,
+            fontSize = 16.sp,
+            modifier = Modifier
+                .align(alignment = Alignment.CenterHorizontally)
+        )
     }
+}
+
+@Preview(
+    showBackground = true,
+    showSystemUi = true
+)
+@Composable
+fun ChordCraftPreview() {
+    Structure()
 }
