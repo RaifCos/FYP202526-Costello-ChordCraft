@@ -1,42 +1,37 @@
 package com.example.chordcraft
 
-import android.content.*
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.*
 import androidx.compose.ui.unit.*
-import androidx.compose.ui.platform.*
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.chordcraft.ui.theme.ChordCraftTheme
 
 private val ScreenPadding = 32.dp
 
-class MainActivity : ComponentActivity() {
+class MainMenuActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            ChordCraftTheme { MainStructure() }
+            ChordCraftTheme { MainMenuStructure() }
         }
     }
 }
 
 @Composable
-fun MainStructure() {
+fun MainMenuStructure() {
     Surface(
         modifier = Modifier.fillMaxSize(),
         color = MaterialTheme.colorScheme.background
     ) {
-        val currContext = LocalContext.current
-        Opening(
-            "Welcome to ChordCraft",
-            "chord extraction made easy.",
-            onStartClick = { moveMenu(currContext) },
+        MainMenu(
+            "Main Menu",
+            "Options TBA",
             modifier = Modifier
                 .padding(ScreenPadding)
         )
@@ -44,10 +39,9 @@ fun MainStructure() {
 }
 
 @Composable
-fun Opening(
+fun MainMenu(
     txtA: String,
     txtB: String,
-    onStartClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -64,19 +58,6 @@ fun Opening(
             text = txtB,
             style = MaterialTheme.typography.bodyMedium
         )
-        Button(
-            onClick = { onStartClick },
-            shape = RoundedCornerShape(16.dp),
-            modifier = Modifier
-                .padding(ScreenPadding)
-                .height(56.dp)
-                .fillMaxWidth(0.7f)
-        ) {
-            Text(
-                text = "Start",
-                style = MaterialTheme.typography.headlineLarge
-            )
-        }
     }
 }
 
@@ -85,11 +66,6 @@ fun Opening(
     showSystemUi = true
 )
 @Composable
-fun MainPreview() {
-    MainStructure()
-}
-
-fun moveMenu(context: Context) {
-    val intent = Intent(context, MainMenuActivity::class.java)
-    context.startActivity(intent)
+fun MainMenuPreview() {
+    MainMenuStructure()
 }
