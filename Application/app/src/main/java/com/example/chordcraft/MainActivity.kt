@@ -69,8 +69,8 @@ fun Opening(
             shape = RoundedCornerShape(16.dp),
             modifier = Modifier
                 .padding(ScreenPadding)
-                .width(256.dp)
-                .height(64.dp)
+                .height(56.dp)
+                .fillMaxWidth(0.7f)
         ) {
             Text(
                 text = "Start",
