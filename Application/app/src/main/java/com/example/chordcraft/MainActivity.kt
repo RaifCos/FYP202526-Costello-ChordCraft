@@ -20,28 +20,25 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            Structure()
+            ChordCraftTheme { Structure() }
         }
     }
 }
 
 @Composable
 fun Structure() {
-    ChordCraftTheme {
-        // A surface container using the 'background' color from the theme
-        Surface(
-            modifier = Modifier.fillMaxSize(),
-            color = MaterialTheme.colorScheme.background
-        ) {
-            val currContext = LocalContext.current
-            GreetingText(
-                "Welcome to ChordCraft",
-                "chord extraction made easy.",
-                onStartClick = { moveMenu(currContext) },
-                modifier = Modifier
-                    .padding(32.dp)
-            )
-        }
+    Surface(
+        modifier = Modifier.fillMaxSize(),
+        color = MaterialTheme.colorScheme.background
+    ) {
+        val currContext = LocalContext.current
+        GreetingText(
+            "Welcome to ChordCraft",
+            "chord extraction made easy.",
+            onStartClick = { moveMenu(currContext) },
+            modifier = Modifier
+                .padding(32.dp)
+        )
     }
 }
 
