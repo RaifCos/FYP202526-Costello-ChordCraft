@@ -3,6 +3,7 @@ package com.example.chordcraft
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
@@ -10,6 +11,7 @@ import androidx.compose.ui.*
 import androidx.compose.ui.unit.*
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import com.example.chordcraft.ui.components.BorderBar
 import com.example.chordcraft.ui.theme.ChordCraftTheme
 
 private val ScreenPadding = 32.dp
@@ -24,17 +26,28 @@ class MainMenuActivity : ComponentActivity() {
 }
 
 @Composable
-fun MainMenuStructure() {
-    Surface(
+fun MainMenuStructure(
+    borderBar: @Composable () -> Unit = { BorderBar() }
+) {
+    Column(
         modifier = Modifier.fillMaxSize(),
-        color = MaterialTheme.colorScheme.background
     ) {
+        borderBar()
+
+        Box(
+            modifier = Modifier
+                .weight(1f)
+                .fillMaxWidth()
+                .background(MaterialTheme.colorScheme.background)
+        ) {
         MainMenu(
             "Main Menu",
             "Options TBA",
             modifier = Modifier
                 .padding(ScreenPadding)
-        )
+        ) }
+
+        borderBar()
     }
 }
 

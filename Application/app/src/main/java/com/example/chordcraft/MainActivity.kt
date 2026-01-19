@@ -4,6 +4,7 @@ import android.content.*
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
@@ -13,6 +14,7 @@ import androidx.compose.ui.unit.*
 import androidx.compose.ui.platform.*
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import com.example.chordcraft.ui.components.BorderBar
 import com.example.chordcraft.ui.theme.ChordCraftTheme
 
 private val ScreenPadding = 32.dp
@@ -27,19 +29,28 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun MainStructure() {
-    Surface(
+fun MainStructure(
+    borderBar: @Composable () -> Unit = { BorderBar() }
+) {
+    Column(
         modifier = Modifier.fillMaxSize(),
-        color = MaterialTheme.colorScheme.background
     ) {
         val currContext = LocalContext.current
+        borderBar()
+        Box(
+            modifier = Modifier
+                .weight(1f)
+                .fillMaxWidth()
+                .background(MaterialTheme.colorScheme.background)
+        ) {
         Opening(
             "Welcome to ChordCraft",
             "chord extraction made easy.",
             onStartClick = { moveMenu(currContext) },
             modifier = Modifier
                 .padding(ScreenPadding)
-        )
+        ) }
+        borderBar()
     }
 }
 
@@ -65,7 +76,7 @@ fun Opening(
             style = MaterialTheme.typography.bodyMedium
         )
         Button(
-            onClick = { onStartClick },
+            onClick = { onStartClick() },
             shape = RoundedCornerShape(16.dp),
             modifier = Modifier
                 .padding(ScreenPadding)
