@@ -12,50 +12,51 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.chordcraft.ui.theme.ChordCraftTheme
 
+private val ScreenPadding = 32.dp
+
 class MainMenuActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            TestStructure()
+            ChordCraftTheme { MainMenuStructure() }
         }
     }
 }
 
 @Composable
-fun TestStructure() {
-    ChordCraftTheme {
-        // A surface container using the 'background' color from the theme
-        Surface(
-            modifier = Modifier.fillMaxSize(),
-            color = MaterialTheme.colorScheme.background
-        ) {
-            TestGreetingText(
-                "Welcome to Main Menu",
-                "Main Menu made easy.",
-                modifier = Modifier
-                    .padding(32.dp)
-            )
-        }
+fun MainMenuStructure() {
+    Surface(
+        modifier = Modifier.fillMaxSize(),
+        color = MaterialTheme.colorScheme.background
+    ) {
+        MainMenu(
+            "Main Menu",
+            "Options TBA",
+            modifier = Modifier
+                .padding(ScreenPadding)
+        )
     }
 }
 
 @Composable
-fun TestGreetingText(txtA: String, txtB: String, modifier: Modifier = Modifier) {
+fun MainMenu(
+    txtA: String,
+    txtB: String,
+    modifier: Modifier = Modifier
+) {
     Column(
         verticalArrangement = Arrangement.Center,
-        modifier = modifier
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = modifier.fillMaxSize()
     ) {
         Text(
             text = txtA,
-            fontSize = 50.sp,
-            lineHeight = 60.sp,
+            style = MaterialTheme.typography.headlineLarge,
             textAlign = TextAlign.Center
         )
         Text(
             text = txtB,
-            fontSize = 16.sp,
-            modifier = Modifier
-                .align(alignment = Alignment.CenterHorizontally)
+            style = MaterialTheme.typography.bodyMedium
         )
     }
 }
@@ -65,6 +66,6 @@ fun TestGreetingText(txtA: String, txtB: String, modifier: Modifier = Modifier) 
     showSystemUi = true
 )
 @Composable
-fun TestChordCraftPreview() {
-    Structure()
+fun MainMenuPreview() {
+    MainMenuStructure()
 }
