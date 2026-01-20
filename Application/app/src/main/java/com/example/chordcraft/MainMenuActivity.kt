@@ -1,5 +1,6 @@
 package com.example.chordcraft
 
+import android.net.Uri
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -12,7 +13,11 @@ import androidx.compose.ui.unit.*
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.chordcraft.ui.components.BorderBar
+import com.example.chordcraft.ui.components.filePickerLauncher
+import com.example.chordcraft.ui.components.getFileName
 import com.example.chordcraft.ui.theme.ChordCraftTheme
+import androidx.compose.material3.Button
+import androidx.compose.runtime.*
 
 private val ScreenPadding = 32.dp
 
@@ -40,12 +45,23 @@ fun MainMenuStructure(
                 .fillMaxWidth()
                 .background(MaterialTheme.colorScheme.background)
         ) {
-        MainMenu(
+            MainMenu(
             "Main Menu",
             "Options TBA",
             modifier = Modifier
                 .padding(ScreenPadding)
-        ) }
+            ) }
+
+        Box(
+            modifier = Modifier
+                .weight(1f)
+                .fillMaxWidth()
+                .background(MaterialTheme.colorScheme.background)
+        ) {
+            UploadChord(
+                modifier = Modifier
+                    .padding(ScreenPadding)
+            ) }
 
         borderBar()
     }
@@ -71,6 +87,31 @@ fun MainMenu(
             text = txtB,
             style = MaterialTheme.typography.bodyMedium
         )
+    }
+}
+
+@Composable
+fun UploadChord(
+    modifier: Modifier = Modifier
+) {
+    val selectedFileUri = remember { mutableStateOf<Uri?>(null) }
+    val launchFilePickerCall = filePickerLauncher(selectedFileUri)
+
+    Column(
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = modifier.fillMaxSize()
+    ) {
+        Button(onClick = launchFilePickerCall) {
+            Text("Upload Audio (MP3/WAV)")
+        }
+
+        selectedFileUri.value?.let { uri ->
+            Text(
+                text = "Selected: ${getFileName(uri)}",
+                style = MaterialTheme.typography.bodyMedium,
+            )
+        }
     }
 }
 
