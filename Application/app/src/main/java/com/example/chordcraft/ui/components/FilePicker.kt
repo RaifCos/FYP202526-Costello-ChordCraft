@@ -22,3 +22,22 @@ fun filePickerLauncher(selectedFileUri: MutableState<Uri?>): () -> Unit {
     } // Return a lambda callable from the MainMenu Activity. 
     return { launcher.launch("audio/*") }
 }
+
+@Composable
+fun getFileName(uri: Uri): String {
+    val context = LocalContext.current
+    var result = ""
+
+    if (uri.scheme == "content") {
+        val cursor = context.contentResolver.query(uri, null, null, null, null)
+        cursor?.use {
+            if (it.moveToFirst()) {
+                val nameIndex = it.getColumnIndex(android.provider.OpenableColumns.DISPLAY_NAME)
+                if (nameIndex >= 0) {
+                    result = it.getString(nameIndex)
+                }
+            }
+        }
+    }
+    return result
+}

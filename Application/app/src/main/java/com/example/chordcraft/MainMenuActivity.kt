@@ -14,6 +14,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.chordcraft.ui.components.BorderBar
 import com.example.chordcraft.ui.components.filePickerLauncher
+import com.example.chordcraft.ui.components.getFileName
 import com.example.chordcraft.ui.theme.ChordCraftTheme
 import androidx.compose.material3.Button
 import androidx.compose.runtime.*
@@ -107,9 +108,8 @@ fun UploadChord(
 
         selectedFileUri.value?.let { uri ->
             Text(
-                text = "Selected: ${uri.lastPathSegment}",
+                text = "Selected: ${getFileName(uri)}",
                 style = MaterialTheme.typography.bodyMedium,
-                modifier = Modifier.padding(top = 8.dp)
             )
         }
     }
