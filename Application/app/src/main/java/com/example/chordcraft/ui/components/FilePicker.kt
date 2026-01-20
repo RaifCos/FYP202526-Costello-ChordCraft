@@ -1,0 +1,26 @@
+package com.example.chordcraft.ui.components
+
+import android.net.Uri
+import android.widget.Toast
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
+import androidx.compose.ui.platform.LocalContext
+
+@Composable
+fun FilePickerLauncher(selectedFileUri: MutableState<Uri?>): () -> Unit {
+    val context = LocalContext.current
+
+    val launcher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.GetContent()
+    ) { uri: Uri? ->
+        if (uri != null) {
+            selectedFileUri.value = uri
+            Toast.makeText(context, "File selected: $uri", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    // Return a lambda that can be called from Button
+    return { launcher.launch("audio/*") }
+}
