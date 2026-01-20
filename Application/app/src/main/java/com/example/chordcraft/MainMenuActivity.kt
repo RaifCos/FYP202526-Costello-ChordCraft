@@ -1,5 +1,6 @@
 package com.example.chordcraft
 
+import android.net.Uri
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -12,8 +13,10 @@ import androidx.compose.ui.unit.*
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.chordcraft.ui.components.BorderBar
+import com.example.chordcraft.ui.components.filePickerLauncher
 import com.example.chordcraft.ui.theme.ChordCraftTheme
 import androidx.compose.material3.Button
+import androidx.compose.runtime.*
 
 private val ScreenPadding = 32.dp
 
@@ -90,13 +93,24 @@ fun MainMenu(
 fun UploadChord(
     modifier: Modifier = Modifier
 ) {
+    val selectedFileUri = remember { mutableStateOf<Uri?>(null) }
+    val launchFilePickerCall = filePickerLauncher(selectedFileUri)
+
     Column(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = modifier.fillMaxSize()
     ) {
-        Button(onClick = /*ADD FUNCTION HERE*/) {
+        Button(onClick = launchFilePickerCall) {
             Text("Upload Audio (MP3/WAV)")
+        }
+
+        selectedFileUri.value?.let { uri ->
+            Text(
+                text = "Selected: ${uri.lastPathSegment}",
+                style = MaterialTheme.typography.bodyMedium,
+                modifier = Modifier.padding(top = 8.dp)
+            )
         }
     }
 }
