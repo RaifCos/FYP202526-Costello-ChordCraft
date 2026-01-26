@@ -1,6 +1,6 @@
 from chord_cnn_lstm.mir.extractors import ExtractorBase
 from chord_cnn_lstm.mir import io
-from io_new.complex_chord_io import ComplexChordIO
+from chord_cnn_lstm.io_new.complex_chord_io import ComplexChordIO
 import numpy as np
 import complex_chord
 from chord_cnn_lstm.mir.music_base import get_scale_and_suffix

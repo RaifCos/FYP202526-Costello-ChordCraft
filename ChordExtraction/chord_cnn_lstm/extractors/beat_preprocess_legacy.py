@@ -1,10 +1,10 @@
 import datasets
-from io_new.beatlab_io import BeatLabIO
+from chord_cnn_lstm.io_new.beatlab_io import BeatLabIO
 import numpy as np
 from chord_cnn_lstm.mir.extractors import ExtractorBase
-from io_new.beat_align_io import BeatAlignCQTIO
-from io_new.chordlab_io import ChordLabIO
-from io_new.list_io import ListIO
+from chord_cnn_lstm.io_new.beat_align_io import BeatAlignCQTIO
+from chord_cnn_lstm.io_new.chordlab_io import ChordLabIO
+from chord_cnn_lstm.io_new.list_io import ListIO
 from chord_cnn_lstm.mir import io
 import librosa
 from chord_cnn_lstm.mir.chord import Chord,ChordTypeComplexity

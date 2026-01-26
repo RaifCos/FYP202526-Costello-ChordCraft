@@ -1,13 +1,13 @@
 import os
 from chord_cnn_lstm.mir import DataPool,DataEntry,io
-from io_new.jams_io import JamsIO
-from io_new.chordlab_io import ChordLabIO
-from io_new.beatlab_io import BeatLabIO
-from io_new.salami_io import SalamiIO
-from io_new.complex_chord_io import ComplexChordIO
-from io_new.midilab_io import MidiLabIO
-from io_new.lyric_io import LyricIO
-from io_new.downbeat_io import DownbeatIO
+from chord_cnn_lstm.io_new.jams_io import JamsIO
+from chord_cnn_lstm.io_new.chordlab_io import ChordLabIO
+from chord_cnn_lstm.io_new.beatlab_io import BeatLabIO
+from chord_cnn_lstm.io_new.salami_io import SalamiIO
+from chord_cnn_lstm.io_new.complex_chord_io import ComplexChordIO
+from chord_cnn_lstm.io_new.midilab_io import MidiLabIO
+from chord_cnn_lstm.io_new.lyric_io import LyricIO
+from chord_cnn_lstm.io_new.downbeat_io import DownbeatIO
 
 from settings import *
 from collections import OrderedDict

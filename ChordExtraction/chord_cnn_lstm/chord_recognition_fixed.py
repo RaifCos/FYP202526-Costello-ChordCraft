@@ -4,7 +4,7 @@ from extractors.cqt import CQTV2,SimpleChordToID
 from chord_cnn_lstm.mir import io,DataEntry
 from extractors.xhmm_ismir import XHMMDecoder
 import numpy as np
-from io_new.chordlab_io import ChordLabIO
+from chord_cnn_lstm.io_new.chordlab_io import ChordLabIO
 from settings import DEFAULT_SR,DEFAULT_HOP_LENGTH
 import sys
 import os

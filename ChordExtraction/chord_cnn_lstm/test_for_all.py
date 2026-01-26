@@ -3,7 +3,7 @@ import chord_cnn_lstm.mir.io as io
 import datasets
 from extractors.cqt import CQTV2,SimpleChordToID
 from chord_cnn_lstm.mir import io,DataEntry
-from io_new.chordlab_io import ChordLabIO
+from chord_cnn_lstm.io_new.chordlab_io import ChordLabIO
 from extractors.xhmm_decoder import XHMMDecoder,prob_to_spectrogram
 from chord_cnn_lstm.complex_chord import Chord,ChordTypeLimit,shift_complex_chord_array_list,complex_chord_chop,enum_to_dict,\
     TriadTypes,SeventhTypes,NinthTypes,EleventhTypes,ThirteenthTypes

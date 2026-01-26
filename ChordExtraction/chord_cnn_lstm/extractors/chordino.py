@@ -3,7 +3,7 @@ from chord_cnn_lstm.mir.common import WORKING_PATH,SONIC_ANNOTATOR_PATH,PACKAGE_
 from chord_cnn_lstm.mir.cache import hasher
 import numpy as np
 import subprocess
-from io_new.chordlab_io import ChordLabIO
+from chord_cnn_lstm.io_new.chordlab_io import ChordLabIO
 from chord_cnn_lstm.mir.extractors.vamp_extractor import rewrite_extract_n3
 from chord_cnn_lstm.mir.music_base import get_scale_and_suffix,NUM_TO_ABS_SCALE
 from chord_cnn_lstm.mir.data_file import FileProxy

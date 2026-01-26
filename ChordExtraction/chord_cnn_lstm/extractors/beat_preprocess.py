@@ -1,5 +1,5 @@
 import datasets
-from io_new.downbeat_io import DownbeatIO
+from chord_cnn_lstm.io_new.downbeat_io import DownbeatIO
 import numpy as np
 from chord_cnn_lstm.mir.extractors import ExtractorBase
 from chord_cnn_lstm.mir import io

@@ -1,6 +1,6 @@
 from chord_cnn_lstm.mir.extractors import ExtractorBase
 from chord_cnn_lstm.mir import io
-from io_new.chordlab_io import ChordLabIO
+from chord_cnn_lstm.io_new.chordlab_io import ChordLabIO
 import pickle
 import os
 import pumpp
