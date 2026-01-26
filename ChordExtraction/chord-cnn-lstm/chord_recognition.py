@@ -10,6 +10,7 @@ import sys
 import os
 import librosa
 import traceback
+import json
 
 # Get the absolute path to the current directory
 current_dir = os.path.dirname(os.path.abspath(__file__))
@@ -18,13 +19,13 @@ current_dir = os.path.dirname(os.path.abspath(__file__))
 # Use the same model file names as the original implementation
 MODEL_NAMES = [os.path.join(current_dir, 'cache_data', f'joint_chord_net_ismir_naive_v1.0_reweight(0.0,10.0)_s{i}.best') for i in range(5)]
 
-def chord_recognition(audio_path, lab_path, chord_dict_name='submission'):
+def chord_recognition(audio_path, output_path, chord_dict_name='submission'):
     """
     Real implementation of chord recognition using the Chord-CNN-LSTM model.
 
     Args:
         audio_path: Path to the audio file
-        lab_path: Path to save the output lab file
+        output_path: Path to save the output JSON file
         chord_dict_name: Name of the chord dictionary to use
     """
     print(f"Running chord recognition on {audio_path} with chord_dict={chord_dict_name}")
@@ -129,42 +130,43 @@ def chord_recognition(audio_path, lab_path, chord_dict_name='submission'):
         print("Running HMM decoder...")
         chordlab = hmm.decode_to_chordlab(entry, probs, False)
 
-        # Debug: Print raw HMM output
-        print("Raw HMM output (chordlab):")
-        for i, chord in enumerate(chordlab[:10]):  # Print first 10 chords
-            print(f"  Chord {i+1}: {chord}")
+        # Convert chordlab to JSON-serializable format
+        json_chords = [
+            {
+                "start": float(start),
+                "end": float(end),
+                "label": chord
+            }
+            for start, end, chord in chordlab
+        ]
 
-        # Save the chord labels to the output file
-        entry.append_data(chordlab, ChordLabIO, 'chord')
-        entry.save('chord', lab_path)
+        # Build final JSON structure
+        output_json = {
+            "audio_file": os.path.basename(audio_path),
+            "sample_rate": entry.prop.sr,
+            "hop_length": entry.prop.hop_length,
+            "chord_dictionary": chord_dict_name,
+            "num_chords": len(json_chords),
+            "chords": json_chords
+        }
 
-        # Print the number of chords detected
-        with open(lab_path, 'r') as f:
-            chord_lines = f.readlines()
-            print(f"Generated {len(chord_lines)} chords and saved to {lab_path}")
+        # Write JSON output
+        with open(output_path, "w") as f:
+            json.dump(output_json, f, indent=2)
 
-            # Print the first few chords for debugging
-            if chord_lines:
-                print("First few chords from file:")
-                for i, line in enumerate(chord_lines[:5]):
-                    print(f"  {i+1}: {line.strip()}")
+        print(f"Generated {len(json_chords)} chords and saved to {output_path}")
 
-        # Check if we have any chords other than "N"
-        has_real_chords = False
-        for chord in chordlab:
-            if chord[2] != "N":
-                has_real_chords = True
-                break
-
-        if not has_real_chords:
-            print("WARNING: Model only detected 'N' chords. This may indicate an issue with the audio file or model.")
+        # Sanity check: detect non-N chords
+        if not any(chord["label"] != "N" for chord in json_chords):
+            print("WARNING: Only 'N' chords detected.")
             print("Possible causes:")
-            print("  1. The audio file doesn't contain clear harmonic content")
-            print("  2. The model checkpoint files might be corrupted or incompatible")
-            print("  3. The CQT feature extraction might not be working correctly")
-            print("  4. The HMM decoder parameters might need adjustment")
+            print("  1. Weak harmonic content in audio")
+            print("  2. Model checkpoint incompatibility")
+            print("  3. Feature extraction issues")
+            print("  4. HMM configuration mismatch")
 
         return True
+
     except Exception as e:
         print(f"Error in chord recognition: {e}")
         traceback.print_exc()
