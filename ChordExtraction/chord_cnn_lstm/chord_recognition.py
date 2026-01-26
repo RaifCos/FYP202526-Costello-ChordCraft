@@ -5,7 +5,7 @@ from chord_cnn_lstm.mir import io, DataEntry
 from chord_cnn_lstm.extractors.xhmm_ismir import XHMMDecoder
 import numpy as np
 from chord_cnn_lstm.io_new.chordlab_io import ChordLabIO
-from settings import DEFAULT_SR, DEFAULT_HOP_LENGTH
+from chord_cnn_lstm.settings import DEFAULT_SR, DEFAULT_HOP_LENGTH
 import sys
 import os
 import librosa
