@@ -8,7 +8,7 @@ The ```Application``` directory contains all the code for the ChordCraft Android
 The ```ChordExtraction``` directory contains the Python implementation of three different Automatic Chord Extraction Models:
 - Hardcoded Chromatic Feature Analysis 
 - Librosa Python Library Chromatic Feature Analysis
-- chord-CNN-LSTM AI Model via [ChordMini API](https://www.chordmini.me/)
+- chord-CNN-LSTM AI Model 
 
 ## :round_pushpin: About this Application
 The ChordCraft is being developed as part of University of Galway CT413 Final Year Project module FY25/26 with the project title "ChordCraft - Audio-to-Guitar Chords". 
