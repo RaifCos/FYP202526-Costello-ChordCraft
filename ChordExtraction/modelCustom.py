@@ -77,10 +77,8 @@ def main(audioPath):
     stft = ShortTimeFourierTransfomrm(y, sr, fftWindowSize=fftWindowSize, hopLength=hopLength)
     # Build Chromagram.
     chromagram = buildChromagram(stft, sr, fftWindowSize=fftWindowSize)
-    # Load Chord Templates.
-    chordNames, chordTemplates = chordProcessing.buildChordTemplates()
     # Detect Chords.
-    chords = chordProcessing.detectChords(chromagram, chordNames, chordTemplates, hopLength=hopLength, sr=sr)
+    chords = chordProcessing.detectChords(chromagram, hopLength=hopLength, sr=sr)
 
     # Print Output JSON.
     processingTime = (time.time() - processStart)

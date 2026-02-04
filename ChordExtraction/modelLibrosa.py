@@ -16,10 +16,8 @@ def main(audioPath):
         n_chroma=12     # Pitch Classes.
     )
 
-    # Load Chord Templates.
-    chordNames, chordTemplates = chordProcessing.buildChordTemplates()
     # Detect Chords.
-    chords = chordProcessing.detectChords(chromagram, chordNames, chordTemplates, hopLength=512, sr=sr)
+    chords = chordProcessing.detectChords(chromagram, hopLength=512, sr=sr)
     
     # Print Output JSON.
     processingTime = (time.time() - processStart)

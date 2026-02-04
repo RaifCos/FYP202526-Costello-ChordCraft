@@ -47,9 +47,10 @@ def buildChordTemplates():
     # Return Results.
     return chordNames, chordTemplates
 
-def detectChords(chromagram, chordNames, chordTemplates, hopLength=512, sr=22050):
+def detectChords(chromagram, hopLength=512, sr=22050):
     frameCount = chromagram.shape[1]
-    
+    chordNames, chordTemplates = buildChordTemplates()
+
     # Compute similarity between each frame and all templates
     # Using cosine similarity (dot product of normalized vectors)
     similarities = np.dot(chordTemplates, chromagram)
