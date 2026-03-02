@@ -19,16 +19,14 @@ import androidx.compose.ui.platform.LocalContext
 
 import com.chaquo.python.Python
 import com.chaquo.python.android.AndroidPlatform
-import com.example.chordcraft.components.callAPI
+import com.example.chordcraft.components.GetChords
 
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-import com.example.chordcraft.components.callPythonReturn
 import com.example.chordcraft.ui.BorderBar
 import com.example.chordcraft.components.filePickerLauncher
 import com.example.chordcraft.components.getFileName
-import com.example.chordcraft.components.cacheFileFromURI
 import com.example.chordcraft.ui.NavMenu
 import com.example.chordcraft.ui.theme.ChordCraftTheme
 
@@ -144,8 +142,7 @@ fun UploadChord(
         Button(onClick = {
             val uri = selectedFileUri.value
             if (uri != null) {
-                val tempFile = cacheFileFromURI(context, uri, "audio.wav")
-                onOutputChange(callPythonReturn("modelCustom", tempFile.absolutePath))
+                onOutputChange(GetChords(true, uri, context))
             }
         }) {
             Text("Generate Chords! (Python)")
@@ -156,7 +153,7 @@ fun UploadChord(
             val uri = selectedFileUri.value
             if (uri != null) {
                 scope.launch(Dispatchers.IO) {
-                    onOutputChange(callAPI(context, uri))
+                    onOutputChange(GetChords(false, uri, context))
                 }
             }
         }) {
