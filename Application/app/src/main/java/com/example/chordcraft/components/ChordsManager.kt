@@ -5,7 +5,7 @@ import android.net.Uri
 
 import org.json.JSONObject
 
-fun ExtractChords(localCall: Boolean, uri: Uri, context: Context) {
+fun extractChords(localCall: Boolean, uri: Uri, context: Context): JSONObject {
     val modelOutput: JSONObject
     if (localCall) {
         val tempFile = cacheFileFromURI(context, uri, "audio.wav")
@@ -13,8 +13,9 @@ fun ExtractChords(localCall: Boolean, uri: Uri, context: Context) {
     } else {
         modelOutput = callAPI(context, uri)
     }
+    return modelOutput
 }
 
-fun GetChords(localCall: Boolean, uri: Uri, context: Context): String {
-    return ExtractChords(localCall, uri, context).toString()
+fun getChords(localCall: Boolean, uri: Uri, context: Context): String {
+    return extractChords(localCall, uri, context).toString()
 }

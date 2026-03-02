@@ -19,7 +19,7 @@ import androidx.compose.ui.platform.LocalContext
 
 import com.chaquo.python.Python
 import com.chaquo.python.android.AndroidPlatform
-import com.example.chordcraft.components.GetChords
+import com.example.chordcraft.components.getChords
 
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -142,7 +142,7 @@ fun UploadChord(
         Button(onClick = {
             val uri = selectedFileUri.value
             if (uri != null) {
-                onOutputChange(GetChords(true, uri, context))
+                onOutputChange(getChords(true, uri, context))
             }
         }) {
             Text("Generate Chords! (Python)")
@@ -153,7 +153,7 @@ fun UploadChord(
             val uri = selectedFileUri.value
             if (uri != null) {
                 scope.launch(Dispatchers.IO) {
-                    onOutputChange(GetChords(false, uri, context))
+                    onOutputChange(getChords(false, uri, context))
                 }
             }
         }) {

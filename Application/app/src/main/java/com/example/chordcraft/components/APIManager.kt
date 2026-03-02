@@ -30,5 +30,12 @@ fun callAPI(context: Context, uri: Uri): JSONObject {
         .build()
 
     val response = client.newCall(request).execute().use { it.body.string() }
-    return JSONObject(response)
+
+    val processedResult = response.trim().let {
+        if (it.startsWith("\"") && it.endsWith("\""))
+            it.substring(1, it.length - 1).replace("\\\"", "\"").replace("\\\\", "\\")
+        else it
+    }
+
+    return JSONObject(processedResult)
 }
