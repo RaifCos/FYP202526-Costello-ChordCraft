@@ -62,7 +62,7 @@ fun ChordPlayingStructure(
                 .background(MaterialTheme.colorScheme.background),
             contentAlignment = Alignment.Center
         ) {
-            Button({ callPython("chordPlayback") }) {
+            Button({ /* TODO: Add Playback Functionality */ }) {
                 Text(text = "Play Audio")
             }
         }
