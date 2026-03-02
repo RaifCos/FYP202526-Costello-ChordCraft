@@ -13,7 +13,8 @@ import androidx.compose.ui.unit.*
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.runtime.*
-import com.example.chordcraft.components.callPython
+import androidx.compose.ui.platform.LocalContext
+import com.example.chordcraft.components.playbackAudio
 
 import com.example.chordcraft.ui.BorderBar
 import com.example.chordcraft.ui.NavMenu
@@ -39,6 +40,7 @@ fun ChordPlayingStructure(
     Column(
         modifier = Modifier.fillMaxSize(),
     ) {
+        val currentContext = LocalContext.current
         borderBar()
 
         Box(
@@ -62,7 +64,7 @@ fun ChordPlayingStructure(
                 .background(MaterialTheme.colorScheme.background),
             contentAlignment = Alignment.Center
         ) {
-            Button({ /* TODO: Add Playback Functionality */ }) {
+            Button({ playbackAudio(currentContext) }) {
                 Text(text = "Play Audio")
             }
         }
