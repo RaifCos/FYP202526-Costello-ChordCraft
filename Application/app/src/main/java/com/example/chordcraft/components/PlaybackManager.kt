@@ -10,6 +10,7 @@ fun playbackAudio(context: Context) {
         .build()
 
     soundPool.load(context.assets.openFd("soundbank/C4.wav"), 1)
+    soundPool.load(context.assets.openFd("soundbank/A4.wav"), 1)
     soundPool.setOnLoadCompleteListener { pool, sampleId, status ->
         if (status == 0) {
             pool.play(sampleId, 1f, 1f, 0, 0, 1f)
