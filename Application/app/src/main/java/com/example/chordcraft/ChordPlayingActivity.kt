@@ -10,13 +10,13 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.*
 import androidx.compose.ui.unit.*
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.runtime.*
 import androidx.compose.ui.platform.LocalContext
 import com.example.chordcraft.components.playbackAudio
 
 import com.example.chordcraft.ui.BorderBar
+import com.example.chordcraft.ui.ChordDisplay
 import com.example.chordcraft.ui.NavMenu
 import com.example.chordcraft.ui.theme.ChordCraftTheme
 
@@ -50,8 +50,7 @@ fun ChordPlayingStructure(
                 .background(MaterialTheme.colorScheme.background),
             contentAlignment = Alignment.Center
         ) {
-            Menu(
-                "Your Chords",
+            ChordDisplay(
                 output,
                 modifier = Modifier.padding(ScreenPadding)
             )
@@ -71,29 +70,6 @@ fun ChordPlayingStructure(
 
         navMenu()
         borderBar()
-    }
-}
-
-@Composable
-fun Menu(
-    txtA: String,
-    txtB: String,
-    modifier: Modifier = Modifier
-) {
-    Column(
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = modifier.fillMaxSize()
-    ) {
-        Text(
-            text = txtA,
-            style = MaterialTheme.typography.headlineLarge,
-            textAlign = TextAlign.Center
-        )
-        Text(
-            text = txtB,
-            style = MaterialTheme.typography.bodyMedium
-        )
     }
 }
 

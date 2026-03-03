@@ -11,7 +11,6 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.*
 import androidx.compose.ui.unit.*
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.material3.Button
 import androidx.compose.runtime.*
@@ -27,6 +26,7 @@ import kotlinx.coroutines.launch
 import com.example.chordcraft.ui.BorderBar
 import com.example.chordcraft.components.filePickerLauncher
 import com.example.chordcraft.components.getFileName
+import com.example.chordcraft.ui.ChordDisplay
 import com.example.chordcraft.ui.NavMenu
 import com.example.chordcraft.ui.theme.ChordCraftTheme
 
@@ -62,8 +62,7 @@ fun ChordExtractionStructure(
                 .fillMaxWidth()
                 .background(MaterialTheme.colorScheme.background)
         ) {
-            ChordExtraction(
-                "Your Chords",
+            ChordDisplay(
                 output,
                 modifier = Modifier.padding(ScreenPadding)
             )
@@ -83,29 +82,6 @@ fun ChordExtractionStructure(
 
         navMenu()
         borderBar()
-    }
-}
-
-@Composable
-fun ChordExtraction(
-    txtA: String,
-    txtB: String,
-    modifier: Modifier = Modifier
-) {
-    Column(
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = modifier.fillMaxSize()
-    ) {
-        Text(
-            text = txtA,
-            style = MaterialTheme.typography.headlineLarge,
-            textAlign = TextAlign.Center
-        )
-        Text(
-            text = txtB,
-            style = MaterialTheme.typography.bodyMedium
-        )
     }
 }
 

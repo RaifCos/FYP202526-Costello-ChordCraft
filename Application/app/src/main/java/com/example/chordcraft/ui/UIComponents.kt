@@ -16,6 +16,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.PlayArrow
+import androidx.compose.material3.Text
+import androidx.compose.ui.text.style.TextAlign
 
 import com.example.chordcraft.ChordExtractionActivity
 import com.example.chordcraft.ChordPlayingActivity
@@ -59,6 +61,28 @@ fun NavMenu () {
                 contentDescription = "Chord PLayback"
             ) }
         }
+    }
+}
+
+@Composable
+fun ChordDisplay(
+chords: String,
+modifier: Modifier = Modifier
+) {
+    Column(
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = modifier.fillMaxSize()
+    ) {
+        Text(
+            text = "Your Chords",
+            style = MaterialTheme.typography.headlineLarge,
+            textAlign = TextAlign.Center
+        )
+        Text(
+            text = chords,
+            style = MaterialTheme.typography.bodyMedium
+        )
     }
 }
 
