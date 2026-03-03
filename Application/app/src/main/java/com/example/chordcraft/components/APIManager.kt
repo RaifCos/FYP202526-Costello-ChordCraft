@@ -19,18 +19,22 @@ fun callAPI(context: Context, uri: Uri): JSONObject {
 
     val mimeType = context.contentResolver.getType(uri) ?: "application/octet-stream"
 
+    // Form Request Body from Audio File
     val requestBody = MultipartBody.Builder()
         .setType(MultipartBody.FORM)
         .addFormDataPart("file", fileName, stream.readBytes().toRequestBody(mimeType.toMediaType()))
         .build()
 
+    // Build Request from URL and Request Body.
     val request = Request.Builder()
         .url("https://fyp202526-costello-chordcraft-backend-production.up.railway.app/run")
         .post(requestBody)
         .build()
 
+    // Call API.
     val response = client.newCall(request).execute().use { it.body.string() }
 
+    // Process result into a format that can be converted into JSON.
     val processedResult = response.trim().let {
         if (it.startsWith("\"") && it.endsWith("\""))
             it.substring(1, it.length - 1).replace("\\\"", "\"").replace("\\\\", "\\")
