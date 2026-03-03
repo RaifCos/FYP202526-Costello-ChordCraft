@@ -16,6 +16,24 @@ fun extractChords(localCall: Boolean, uri: Uri, context: Context): JSONObject {
     return modelOutput
 }
 
+fun chordDisplay(modelOutput: JSONObject): String {
+    val result = StringBuilder()
+    val chordsArray = modelOutput.getJSONArray("chords")
+
+    // Append each Chord Label to the result String. 
+    for (i in 0 until chordsArray.length()) {
+        val chord = chordsArray.getJSONObject(i)
+        val label = chord.getString("chord")
+        result.append(label)
+        if (i < chordsArray.length() - 1) {
+            result.append(", ")
+        }
+    }
+
+    return result.toString()
+}
+
 fun getChords(localCall: Boolean, uri: Uri, context: Context): String {
-    return extractChords(localCall, uri, context).toString()
+    val modelOutput = extractChords(localCall, uri, context)
+    return chordDisplay(modelOutput)
 }
