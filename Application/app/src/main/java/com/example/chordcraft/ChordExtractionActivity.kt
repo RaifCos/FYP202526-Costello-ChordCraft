@@ -38,19 +38,19 @@ class ChordExtractionActivity : ComponentActivity() {
         if (!Python.isStarted()) {
             Python.start(AndroidPlatform(this))
         }
+        val output = intent.getStringExtra("output") ?: "Your Chords will appear here."
         setContent {
-            ChordCraftTheme { ChordExtractionStructure() }
+            ChordCraftTheme { ChordExtractionStructure(output) }
         }
     }
 }
 
 @Composable
 fun ChordExtractionStructure(
+    chordModelOutput: String,
     borderBar: @Composable () -> Unit = { BorderBar() },
-    navMenu: @Composable () -> Unit = { NavMenu() }
 ) {
-    var output by remember { mutableStateOf("Your Chords will appear here.") }
-
+    var output by remember { mutableStateOf(chordModelOutput) }
     Column(
         modifier = Modifier.fillMaxSize(),
     ) {
@@ -80,7 +80,7 @@ fun ChordExtractionStructure(
             )
         }
 
-        navMenu()
+        NavMenu(output)
         borderBar()
     }
 }
@@ -144,5 +144,5 @@ fun UploadChord(
 )
 @Composable
 fun ChordExtractionPreview() {
-    ChordExtractionStructure()
+    ChordExtractionStructure("Your Chords will appear here.")
 }

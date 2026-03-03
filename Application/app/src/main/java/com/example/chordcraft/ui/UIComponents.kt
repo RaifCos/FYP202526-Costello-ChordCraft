@@ -21,6 +21,7 @@ import androidx.compose.ui.text.style.TextAlign
 
 import com.example.chordcraft.ChordExtractionActivity
 import com.example.chordcraft.ChordPlayingActivity
+import org.json.JSONObject
 
 @Composable
 fun BorderBar(
@@ -35,7 +36,7 @@ fun BorderBar(
 }
 
 @Composable
-fun NavMenu () {
+fun NavMenu (output: String) {
     val currContext = LocalContext.current
     val iconSet = Icons.Default
     Box(
@@ -48,14 +49,14 @@ fun NavMenu () {
         Row (
             horizontalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            Button( { moveActivity(currContext, ChordExtractionActivity::class.java) } )
-            { ->
+            Button( { moveActivity(currContext, ChordExtractionActivity::class.java, output) } )
+            {
                 Icon(
                 imageVector = iconSet.Home,
                 contentDescription = "Chord Extraction"
             ) }
 
-            Button( { moveActivity(currContext, ChordPlayingActivity::class.java) } )
+            Button( { moveActivity(currContext, ChordPlayingActivity::class.java, output) } )
             { Icon(
                 imageVector = iconSet.PlayArrow,
                 contentDescription = "Chord PLayback"
@@ -86,7 +87,8 @@ modifier: Modifier = Modifier
     }
 }
 
-fun moveActivity(context: Context, target: Class<out Activity>) {
+fun moveActivity(context: Context, target: Class<out Activity>, output: String) {
     val intent = Intent(context, target)
+    intent.putExtra("output", output)
     context.startActivity(intent)
 }

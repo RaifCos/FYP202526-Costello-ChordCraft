@@ -12,6 +12,7 @@ import androidx.compose.ui.*
 import androidx.compose.ui.unit.*
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.runtime.*
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
 import com.example.chordcraft.components.playbackAudio
 
@@ -25,18 +26,19 @@ private val ScreenPadding = 32.dp
 class ChordPlayingActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        val output = intent.getStringExtra("output") ?: "Your Chords will appear here."
         setContent {
-            ChordCraftTheme { ChordPlayingStructure() }
+            ChordCraftTheme { ChordPlayingStructure(output) }
         }
     }
 }
 
 @Composable
 fun ChordPlayingStructure(
+    chordModelOutput: String,
     borderBar: @Composable () -> Unit = { BorderBar() },
-    navMenu: @Composable () -> Unit = { NavMenu() }
 ) {
-    var output by remember { mutableStateOf("Your Chords will appear here.") }
+    var output by remember { mutableStateOf(chordModelOutput) }
     Column(
         modifier = Modifier.fillMaxSize(),
     ) {
@@ -68,7 +70,7 @@ fun ChordPlayingStructure(
             }
         }
 
-        navMenu()
+        NavMenu(output)
         borderBar()
     }
 }
@@ -79,5 +81,5 @@ fun ChordPlayingStructure(
 )
 @Composable
 fun ChordPlayingPreview() {
-    ChordPlayingStructure()
+    ChordPlayingStructure("Your Chords will appear here.")
 }
