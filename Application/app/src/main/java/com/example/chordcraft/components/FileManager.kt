@@ -11,6 +11,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.ui.platform.LocalContext
 
+import java.io.File
+
 @Composable
 fun filePickerLauncher(selectedFileUri: MutableState<Uri?>): () -> Unit {
     val context = LocalContext.current
@@ -47,7 +49,6 @@ fun formatValidation(context: Context, uri: Uri): Boolean {
     return isValidMime || isValidExtension
 }
 
-// Get the name of the file uploaded.
 @Composable
 fun getFileName(uri: Uri): String {
     val context = LocalContext.current
@@ -62,4 +63,12 @@ fun getFileName(uri: Uri): String {
         }
     }
     return result
+}
+
+fun cacheFileFromURI(context: Context, uri: Uri, name: String): File {
+    val tempFile = File(context.cacheDir, name)
+    context.contentResolver.openInputStream(uri)?.use { input ->
+        tempFile.outputStream().use { output -> input.copyTo(output) }
+    }
+    return tempFile
 }

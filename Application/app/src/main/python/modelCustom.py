@@ -1,3 +1,4 @@
+import json
 import time
 import numpy as np
 import audioLoader
@@ -77,4 +78,4 @@ def main(audioPath):
         "chords": chords,
         "processing_time": processingTime
     }
-    return output
+    return json.dumps(output)

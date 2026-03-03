@@ -1,8 +1,6 @@
 package com.example.chordcraft
 
-import android.content.*
 import android.os.Bundle
-
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
@@ -16,22 +14,23 @@ import androidx.compose.ui.platform.*
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 
-import com.example.chordcraft.ui.components.BorderBar
+import com.example.chordcraft.ui.BorderBar
+import com.example.chordcraft.ui.moveActivity
 import com.example.chordcraft.ui.theme.ChordCraftTheme
 
 private val ScreenPadding = 32.dp
 
-class MainActivity : ComponentActivity() {
+class OpeningActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            ChordCraftTheme { MainStructure() }
+            ChordCraftTheme { OpeningStructure() }
         }
     }
 }
 
 @Composable
-fun MainStructure(
+fun OpeningStructure(
     borderBar: @Composable () -> Unit = { BorderBar() }
 ) {
     Column(
@@ -48,7 +47,7 @@ fun MainStructure(
         Opening(
             "Welcome to ChordCraft!",
             "Chord extraction made easy.",
-            onStartClick = { moveMenu(currContext) },
+            onStartClick = { moveActivity(currContext, ChordExtractionActivity::class.java) },
             modifier = Modifier
                 .padding(ScreenPadding)
         ) }
@@ -98,11 +97,6 @@ fun Opening(
     showSystemUi = true
 )
 @Composable
-fun MainPreview() {
-    MainStructure()
-}
-
-fun moveMenu(context: Context) {
-    val intent = Intent(context, MainMenuActivity::class.java)
-    context.startActivity(intent)
+fun OpeningPreview() {
+    OpeningStructure()
 }
