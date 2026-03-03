@@ -9,12 +9,28 @@ fun playbackAudio(context: Context) {
         .setMaxStreams(8)
         .build()
 
-    soundPool.load(context.assets.openFd("soundbank/00_C4.wav"), 1)
-    soundPool.load(context.assets.openFd("soundbank/04_E4.wav"), 1)
-    soundPool.load(context.assets.openFd("soundbank/07_G4.wav"), 1)
-    soundPool.setOnLoadCompleteListener { pool, sampleId, status ->
+    val soundFiles = listOf(
+        "soundbank/00_C4.wav",
+        "soundbank/04_E4.wav",
+        "soundbank/07_G4.wav"
+    )
+
+    val sampleIds = mutableListOf<Int>()
+    var loadedCount = 0
+
+    soundFiles.forEach { file ->
+        val sampleId = soundPool.load(context.assets.openFd(file), 1)
+        sampleIds.add(sampleId)
+    }
+
+    soundPool.setOnLoadCompleteListener { pool, _, status ->
         if (status == 0) {
-            pool.play(sampleId, 1f, 1f, 0, 0, 1f)
+            loadedCount++
+            if (loadedCount == soundFiles.size) {
+                sampleIds.forEach { id ->
+                    pool.play(id, 1f, 1f, 1, 0, 1f)
+                }
+            }
         }
     }
 }
