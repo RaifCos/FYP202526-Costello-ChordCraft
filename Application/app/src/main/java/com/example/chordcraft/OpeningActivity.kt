@@ -47,7 +47,7 @@ fun OpeningStructure(
         Opening(
             "Welcome to ChordCraft!",
             "Chord extraction made easy.",
-            onStartClick = { moveActivity(currContext, ChordExtractionActivity::class.java) },
+            onStartClick = { moveActivity(currContext, ChordExtractionActivity::class.java, "Your Chords will appear here.") },
             modifier = Modifier
                 .padding(ScreenPadding)
         ) }
