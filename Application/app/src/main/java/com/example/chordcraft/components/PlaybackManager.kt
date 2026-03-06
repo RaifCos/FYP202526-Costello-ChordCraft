@@ -2,9 +2,6 @@ package com.example.chordcraft.components
 
 import android.content.Context
 import android.media.SoundPool
-import android.util.Log
-import androidx.compose.ui.platform.LocalContext
-import org.json.JSONArray
 import org.json.JSONObject
 
 // TODO: Make function play Chords Returned by Chord Extraction Model.

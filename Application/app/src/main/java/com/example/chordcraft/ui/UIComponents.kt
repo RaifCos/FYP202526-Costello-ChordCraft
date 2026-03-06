@@ -36,7 +36,7 @@ fun BorderBar(
 }
 
 @Composable
-fun NavMenu (output: String) {
+fun NavMenu (chordOutput: String, chordString: String) {
     val currContext = LocalContext.current
     val iconSet = Icons.Default
     Box(
@@ -49,14 +49,14 @@ fun NavMenu (output: String) {
         Row (
             horizontalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            Button( { moveActivity(currContext, ChordExtractionActivity::class.java, output) } )
+            Button( { moveActivity(currContext, ChordExtractionActivity::class.java, chordOutput, chordString) } )
             {
                 Icon(
                 imageVector = iconSet.Home,
                 contentDescription = "Chord Extraction"
             ) }
 
-            Button( { moveActivity(currContext, ChordPlayingActivity::class.java, output) } )
+            Button( { moveActivity(currContext, ChordPlayingActivity::class.java, chordOutput, chordString) } )
             { Icon(
                 imageVector = iconSet.PlayArrow,
                 contentDescription = "Chord PLayback"
@@ -87,8 +87,9 @@ modifier: Modifier = Modifier
     }
 }
 
-fun moveActivity(context: Context, target: Class<out Activity>, output: String) {
+fun moveActivity(context: Context, target: Class<out Activity>, chordOutput: String, chordString: String) {
     val intent = Intent(context, target)
-    intent.putExtra("output", output)
+    intent.putExtra("chordOutput", chordOutput)
+    intent.putExtra("chordString", chordString)
     context.startActivity(intent)
 }

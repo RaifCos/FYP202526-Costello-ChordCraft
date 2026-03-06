@@ -31,8 +31,3 @@ fun generateChordString(modelOutput: JSONObject): String {
     }
     return result.toString()
 }
-
-fun getChords(localCall: Boolean, uri: Uri, context: Context): String {
-    val modelOutput = extractChords(localCall, uri, context)
-    return generateChordString(modelOutput)
-}
