@@ -1,4 +1,5 @@
 import numpy as np
+import json
 
 roots = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"]
 _chordNames, _chordTemplates = None, None
@@ -46,6 +47,22 @@ def buildChordTemplates():
 
     # Return Results.
     return chordNames, chordTemplates
+
+def createTemplateJSON():
+    global _chordNames, _chordTemplates
+    if _chordNames is None:
+        _chordNames, _chordTemplates = buildChordTemplates()
+        
+    output = []
+
+    for i in range(len(_chordNames)):
+        output.append({
+            "name": _chordNames[i],
+            "template": _chordTemplates[i].tolist()
+        })
+
+    return json.dumps(output)
+        
 
 def detectChords(chromagram, hopLength=512, sr=22050):
     frameCount = chromagram.shape[1]

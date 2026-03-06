@@ -2,6 +2,7 @@ package com.example.chordcraft.components
 
 import android.content.Context
 import android.media.SoundPool
+import org.json.JSONObject
 
 // TODO: Make function play Chords Returned by Chord Extraction Model.
 fun playbackAudio(context: Context) {
@@ -33,4 +34,8 @@ fun playbackAudio(context: Context) {
             }
         }
     }
+}
+
+fun getChordTemplates(): JSONObject {
+    return callPythonJSON("chordProcessing", "createTemplateJSON")
 }
