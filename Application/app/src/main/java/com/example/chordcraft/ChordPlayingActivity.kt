@@ -14,12 +14,13 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.runtime.*
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
-import com.example.chordcraft.components.playbackAudio
+import com.example.chordcraft.components.getChordTemplates
 
 import com.example.chordcraft.ui.BorderBar
 import com.example.chordcraft.ui.ChordDisplay
 import com.example.chordcraft.ui.NavMenu
 import com.example.chordcraft.ui.theme.ChordCraftTheme
+import org.json.JSONObject
 
 private val ScreenPadding = 32.dp
 
@@ -65,7 +66,7 @@ fun ChordPlayingStructure(
                 .background(MaterialTheme.colorScheme.background),
             contentAlignment = Alignment.Center
         ) {
-            Button({ playbackAudio(currentContext) }) {
+            Button({ /*getChordTemplates()*/ }) {
                 Text(text = "Play Audio")
             }
         }
