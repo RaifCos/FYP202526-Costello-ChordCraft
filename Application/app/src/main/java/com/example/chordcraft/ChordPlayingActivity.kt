@@ -13,7 +13,8 @@ import androidx.compose.ui.unit.*
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.runtime.*
 import androidx.compose.runtime.setValue
-import com.example.chordcraft.components.getChordTemplates
+import androidx.compose.ui.platform.LocalContext
+import com.example.chordcraft.components.playbackChords
 
 import com.example.chordcraft.ui.BorderBar
 import com.example.chordcraft.ui.ChordDisplay
@@ -42,6 +43,7 @@ fun ChordPlayingStructure(
 ) {
     var chordOutput by remember { mutableStateOf(chordModelOutput) }
     var chordString by remember { mutableStateOf(chordModelString) }
+    val context = LocalContext.current
 
     Column(
         modifier = Modifier.fillMaxSize(),
@@ -68,7 +70,7 @@ fun ChordPlayingStructure(
                 .background(MaterialTheme.colorScheme.background),
             contentAlignment = Alignment.Center
         ) {
-            Button({ getChordTemplates(chordOutput) }) {
+            Button({ playbackChords(context, chordOutput) }) {
                 Text(text = "Play Audio")
             }
         }
