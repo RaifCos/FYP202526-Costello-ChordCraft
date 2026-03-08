@@ -13,6 +13,7 @@ import androidx.compose.ui.unit.*
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.runtime.*
 import androidx.compose.runtime.setValue
+import com.example.chordcraft.components.getChordTemplates
 
 import com.example.chordcraft.ui.BorderBar
 import com.example.chordcraft.ui.ChordDisplay
@@ -67,7 +68,7 @@ fun ChordPlayingStructure(
                 .background(MaterialTheme.colorScheme.background),
             contentAlignment = Alignment.Center
         ) {
-            Button({ /*getChordTemplates()*/ }) {
+            Button({ getChordTemplates(chordOutput) }) {
                 Text(text = "Play Audio")
             }
         }
