@@ -14,35 +14,40 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.runtime.*
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
-import com.example.chordcraft.components.playbackAudio
+import com.example.chordcraft.components.playbackChords
 
 import com.example.chordcraft.ui.BorderBar
 import com.example.chordcraft.ui.ChordDisplay
 import com.example.chordcraft.ui.NavMenu
 import com.example.chordcraft.ui.theme.ChordCraftTheme
+import org.json.JSONObject
 
 private val ScreenPadding = 32.dp
 
 class ChordPlayingActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val output = intent.getStringExtra("output") ?: "Your Chords will appear here."
+        val chordString = intent.getStringExtra("chordString") ?: "Your Chords will appear here."
+        val chordOutput = JSONObject(intent.getStringExtra("chordOutput") ?: """{"Error": "No Chords Found."}""")
         setContent {
-            ChordCraftTheme { ChordPlayingStructure(output) }
+            ChordCraftTheme { ChordPlayingStructure(chordOutput, chordString) }
         }
     }
 }
 
 @Composable
 fun ChordPlayingStructure(
-    chordModelOutput: String,
+    chordModelOutput: JSONObject,
+    chordModelString: String,
     borderBar: @Composable () -> Unit = { BorderBar() },
 ) {
-    var output by remember { mutableStateOf(chordModelOutput) }
+    var chordOutput by remember { mutableStateOf(chordModelOutput) }
+    var chordString by remember { mutableStateOf(chordModelString) }
+    val context = LocalContext.current
+
     Column(
         modifier = Modifier.fillMaxSize(),
     ) {
-        val currentContext = LocalContext.current
         borderBar()
 
         Box(
@@ -53,7 +58,7 @@ fun ChordPlayingStructure(
             contentAlignment = Alignment.Center
         ) {
             ChordDisplay(
-                output,
+                chordString,
                 modifier = Modifier.padding(ScreenPadding)
             )
         }
@@ -65,12 +70,12 @@ fun ChordPlayingStructure(
                 .background(MaterialTheme.colorScheme.background),
             contentAlignment = Alignment.Center
         ) {
-            Button({ playbackAudio(currentContext) }) {
+            Button({ playbackChords(context, chordOutput) }) {
                 Text(text = "Play Audio")
             }
         }
 
-        NavMenu(output)
+        NavMenu(chordOutput.toString(), chordString)
         borderBar()
     }
 }
@@ -81,5 +86,5 @@ fun ChordPlayingStructure(
 )
 @Composable
 fun ChordPlayingPreview() {
-    ChordPlayingStructure("Your Chords will appear here.")
+    ChordPlayingStructure(JSONObject("""{"Error": "No Chords Found."}"""),"Your Chords will appear here.")
 }

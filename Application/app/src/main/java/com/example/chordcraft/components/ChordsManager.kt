@@ -9,7 +9,7 @@ fun extractChords(localCall: Boolean, uri: Uri, context: Context): JSONObject {
     val modelOutput: JSONObject
     if (localCall) {
         val tempFile = cacheFileFromURI(context, uri, "audio.wav")
-        modelOutput = callPythonReturn("modelCustom", tempFile.absolutePath)
+        modelOutput = callPythonJSON("modelCustom", "main", tempFile.absolutePath)
     } else {
         modelOutput = callAPI(context, uri)
     }
@@ -30,9 +30,4 @@ fun generateChordString(modelOutput: JSONObject): String {
         }
     }
     return result.toString()
-}
-
-fun getChords(localCall: Boolean, uri: Uri, context: Context): String {
-    val modelOutput = extractChords(localCall, uri, context)
-    return generateChordString(modelOutput)
 }

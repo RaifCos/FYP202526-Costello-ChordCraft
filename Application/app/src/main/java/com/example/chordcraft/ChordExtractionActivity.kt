@@ -18,17 +18,19 @@ import androidx.compose.ui.platform.LocalContext
 
 import com.chaquo.python.Python
 import com.chaquo.python.android.AndroidPlatform
-import com.example.chordcraft.components.getChords
+import com.example.chordcraft.components.extractChords
 
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 import com.example.chordcraft.ui.BorderBar
 import com.example.chordcraft.components.filePickerLauncher
+import com.example.chordcraft.components.generateChordString
 import com.example.chordcraft.components.getFileName
 import com.example.chordcraft.ui.ChordDisplay
 import com.example.chordcraft.ui.NavMenu
 import com.example.chordcraft.ui.theme.ChordCraftTheme
+import org.json.JSONObject
 
 private val ScreenPadding = 32.dp
 
@@ -38,19 +40,23 @@ class ChordExtractionActivity : ComponentActivity() {
         if (!Python.isStarted()) {
             Python.start(AndroidPlatform(this))
         }
-        val output = intent.getStringExtra("output") ?: "Your Chords will appear here."
+        val chordString = intent.getStringExtra("chordString") ?: "Your Chords will appear here."
+        val chordOutput = JSONObject(intent.getStringExtra("chordOutput") ?: """{"Error": "No Chords Found."}""")
         setContent {
-            ChordCraftTheme { ChordExtractionStructure(output) }
+            ChordCraftTheme { ChordExtractionStructure(chordOutput, chordString) }
         }
     }
 }
 
 @Composable
 fun ChordExtractionStructure(
-    chordModelOutput: String,
-    borderBar: @Composable () -> Unit = { BorderBar() },
+    chordModelOutput: JSONObject,
+    chordModelString: String,
+    borderBar: @Composable (() -> Unit) = { BorderBar() },
 ) {
-    var output by remember { mutableStateOf(chordModelOutput) }
+    var chordOutput by remember { mutableStateOf(chordModelOutput) }
+    var chordString by remember { mutableStateOf(chordModelString) }
+
     Column(
         modifier = Modifier.fillMaxSize(),
     ) {
@@ -63,7 +69,7 @@ fun ChordExtractionStructure(
                 .background(MaterialTheme.colorScheme.background)
         ) {
             ChordDisplay(
-                output,
+                chordString,
                 modifier = Modifier.padding(ScreenPadding)
             )
         }
@@ -75,19 +81,21 @@ fun ChordExtractionStructure(
                 .background(MaterialTheme.colorScheme.background)
         ) {
             UploadChord(
-                onOutputChange = { output = it },
+                onOutputChange = { chordOutput = it },
+                onStringChange = { chordString = generateChordString(it) },
                 modifier = Modifier.padding(ScreenPadding)
             )
         }
 
-        NavMenu(output)
+        NavMenu(chordOutput.toString(), chordString)
         borderBar()
     }
 }
 
 @Composable
 fun UploadChord(
-    onOutputChange: (String) -> Unit,
+    onOutputChange: (JSONObject) -> Unit,
+    onStringChange: (JSONObject) -> Unit,
     modifier: Modifier = Modifier
 ) {
     val context = LocalContext.current
@@ -118,7 +126,9 @@ fun UploadChord(
         Button(onClick = {
             val uri = selectedFileUri.value
             if (uri != null) {
-                onOutputChange(getChords(true, uri, context))
+                val result = extractChords(true, uri, context)
+                onOutputChange(result)
+                onStringChange(result)
             }
         }) {
             Text("Generate Chords! (Python)")
@@ -129,7 +139,9 @@ fun UploadChord(
             val uri = selectedFileUri.value
             if (uri != null) {
                 scope.launch(Dispatchers.IO) {
-                    onOutputChange(getChords(false, uri, context))
+                    val result = extractChords(false, uri, context)
+                    onOutputChange(result)
+                    onStringChange(result)
                 }
             }
         }) {
@@ -144,5 +156,5 @@ fun UploadChord(
 )
 @Composable
 fun ChordExtractionPreview() {
-    ChordExtractionStructure("Your Chords will appear here.")
+    ChordExtractionStructure(JSONObject("""{"Error": "No Chords Found."}"""), "Your Chords will appear here.")
 }

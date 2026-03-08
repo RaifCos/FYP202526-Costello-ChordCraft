@@ -1,4 +1,5 @@
 import numpy as np
+import json
 
 roots = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"]
 _chordNames, _chordTemplates = None, None
@@ -46,6 +47,47 @@ def buildChordTemplates():
 
     # Return Results.
     return chordNames, chordTemplates
+
+def getChordTemplates(chordsJson):
+    global _chordNames, _chordTemplates
+    if _chordNames is None:
+        _chordNames, _chordTemplates = buildChordTemplates()
+
+    # Process Input JSON. 
+    parsed = json.loads(chordsJson)
+    chords = parsed["chords"]
+    output = []
+
+    for chord in chords:
+        chordName = chord["chord"]
+
+        # Skip "N" Chords. 
+        if chordName == "N":
+            continue
+
+        # Generate MIDI Values for all Notes in the Interval. 
+        if chordName in _chordNames:
+            chordIndex = _chordNames.index(chordName)
+            template = _chordTemplates[chordIndex]
+
+            rootIndex = chordIndex % 12
+            rootMidi = 60 + rootIndex
+
+            allNotes = [60 + j for j, val in enumerate(template) if val > 0.0]
+            midiIntervals = sorted([note if note >= rootMidi else note + 12 for note in allNotes])
+        else:
+            midiIntervals = []
+
+        # Append Results to JSON. 
+        output.append({
+            "chord": chordName,
+            "intervals": midiIntervals,
+            "start": chord["start"],
+            "end": chord["end"],
+        })
+
+    return json.dumps({"chords": output})
+        
 
 def detectChords(chromagram, hopLength=512, sr=22050):
     frameCount = chromagram.shape[1]
