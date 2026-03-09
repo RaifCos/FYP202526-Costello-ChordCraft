@@ -60,7 +60,7 @@ fun ChordExtractionStructure(
         modifier = Modifier.fillMaxSize(),
     ) {
         borderBar()
-        
+
         Box(
             modifier = Modifier
                 .weight(1f)
