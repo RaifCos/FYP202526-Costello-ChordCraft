@@ -1,7 +1,5 @@
 package com.example.chordcraft.components
 
-import org.json.JSONObject
-
 // Structure of each Guitar Note.
 data class GuitarNote(
     val string: Int,
@@ -23,15 +21,13 @@ private const val MAX_FRET = 24
 private const val MAX_FRET_SPAN = 4 // Max stretch for a playable chord.
 
 // Function to generate a list of Guitar Chords from a Chord JSON.
-fun generateGuitarChords(chordsJSON: JSONObject): List<GuitarChord?> {
-    val chords = chordsJSON.getJSONArray("chords")
+fun generateGuitarChords(chordList: List<Chord>): List<GuitarChord?> {
     val output = mutableListOf<GuitarChord?>()
 
-    for (i in 0 until chords.length()) {
+    for (chord in chordList) {
         // Retrieve Chord from JSON.
-        val chord = chords.getJSONObject(i)
-        val intervals = chord.getJSONArray("intervals")
-        val midiNotes = (0 until intervals.length()).map { intervals.getInt(it) }
+        val chordNotes = chord.notes
+        val midiNotes = (0 until chordNotes.size).map { chordNotes[it] }
 
         // Find all the positions where a particular note could be played.
         val candidatesPerNote: List<List<GuitarNote>> = midiNotes.map {

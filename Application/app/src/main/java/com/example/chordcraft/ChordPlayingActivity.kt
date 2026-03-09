@@ -13,7 +13,6 @@ import androidx.compose.ui.*
 import androidx.compose.ui.unit.*
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.runtime.*
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
 import com.example.chordcraft.components.ChordViewModel
 import com.example.chordcraft.components.generateChordString
@@ -23,7 +22,6 @@ import com.example.chordcraft.ui.BorderBar
 import com.example.chordcraft.ui.ChordDisplay
 import com.example.chordcraft.ui.NavMenu
 import com.example.chordcraft.ui.theme.ChordCraftTheme
-import org.json.JSONObject
 import kotlin.getValue
 
 private val ScreenPadding = 32.dp
