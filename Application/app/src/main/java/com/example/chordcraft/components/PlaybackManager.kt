@@ -2,11 +2,12 @@ package com.example.chordcraft.components
 
 import android.content.Context
 import android.media.MediaPlayer
-import org.json.JSONObject
+
 import java.io.File
 import java.io.FileOutputStream
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
+
 import kotlin.math.roundToInt
 
 // Define Audio Format Constants.
@@ -15,48 +16,33 @@ private const val BIT_DEPTH = 16
 private const val CHANNELS = 2
 
 // Function to analyze provided Chordal data, and use it to render and play an Audio output.
-fun playbackChords(context: Context, chords: JSONObject) {
-    // Only run if Chord JSON is valid.
-    if (!chords.has("Error")) {
-
-        // Get MIDI values from chordProcessing.py.
-        val chordIntervals = callPythonJSON("chordProcessing", "getChordTemplates", chords.toString())
-
-        // Render Audio File and play.
-        val chordAudioFile = File(context.cacheDir, "chordAudio.wav")
-        renderChordAudio(context, chordIntervals.toString(), chordAudioFile)
-        val mediaPlayer = MediaPlayer().apply {
-            setDataSource(chordAudioFile.absolutePath)
-            prepare()
-            start()
-        }
+fun playbackChords(context: Context, chordList: List<Chord>) {
+    // Render Audio File and play.
+    val chordAudioFile = File(context.cacheDir, "chordAudio.wav")
+    renderChordAudio(context, chordList, chordAudioFile)
+    val mediaPlayer = MediaPlayer().apply {
+        setDataSource(chordAudioFile.absolutePath)
+        prepare()
+        start()
     }
 }
 
-// Function that generates an audio file from a JSON of MIDI numebrs and chord times.
-fun renderChordAudio(context: Context, chordsJson: String, outputFile: File) {
-    val parsed = JSONObject(chordsJson)
-    val chords = parsed.getJSONArray("chords")
-
+// Function that generates an audio file from a JSON of MIDI numbers and chord times.
+fun renderChordAudio(context: Context, chordList: List<Chord>, outputFile: File) {
     // Find the end time of the final chord to get the total length.
-    var totalSeconds = 2.0
-    for (i in 0 until chords.length()) {
-        val chord = chords.getJSONObject(i)
-        totalSeconds += maxOf(totalSeconds, chord.getDouble("end"))
-    }
+    val totalSeconds = 2.0 + chordList.last().endTime
 
     val totalSamples = (totalSeconds * SAMPLE_RATE).roundToInt()
     val mixBuffer = FloatArray(totalSamples * CHANNELS)
 
     // Load each Chord.
-    for (i in 0 until chords.length()) {
-        val chord = chords.getJSONObject(i)
-        val sample = (chord.getDouble("start") * SAMPLE_RATE).roundToInt() * CHANNELS
-        val intervals = chord.getJSONArray("intervals")
+    for (chord in chordList) {
+        val sample = (chord.startTime * SAMPLE_RATE).roundToInt() * CHANNELS
+        val chordNotes = chord.notes
 
         // Load each Note.
-        for (j in 0 until intervals.length()) {
-            val midiNote = intervals.getInt(j)
+        for (j in 0 until chordNotes.size) {
+            val midiNote = chordNotes[j]
             val samples = loadSoundbankWAV(context, midiNote) ?: continue
 
             // Mix Soundbank Samples into the buffer.

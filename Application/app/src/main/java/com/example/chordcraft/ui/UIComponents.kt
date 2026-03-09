@@ -9,7 +9,6 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
@@ -17,11 +16,11 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material3.Text
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.text.style.TextAlign
 
 import com.example.chordcraft.ChordExtractionActivity
 import com.example.chordcraft.ChordPlayingActivity
-import org.json.JSONObject
 
 @Composable
 fun BorderBar(
@@ -36,33 +35,38 @@ fun BorderBar(
 }
 
 @Composable
-fun NavMenu (chordOutput: String, chordString: String) {
-    val currContext = LocalContext.current
+fun NavMenu () {
+    val context = LocalContext.current
     val iconSet = Icons.Default
     Box(
         modifier = Modifier
             .fillMaxWidth()
             .height(50.dp)
             .background(MaterialTheme.colorScheme.background),
-        contentAlignment = Alignment.Center
+            contentAlignment = Alignment.Center
     ) {
         Row (
             horizontalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            Button( { moveActivity(currContext, ChordExtractionActivity::class.java, chordOutput, chordString) } )
+            Button( { moveActivity(context, ChordExtractionActivity::class.java) } )
             {
                 Icon(
                 imageVector = iconSet.Home,
                 contentDescription = "Chord Extraction"
             ) }
 
-            Button( { moveActivity(currContext, ChordPlayingActivity::class.java, chordOutput, chordString) } )
+            Button( { moveActivity(context, ChordPlayingActivity::class.java) } )
             { Icon(
                 imageVector = iconSet.PlayArrow,
                 contentDescription = "Chord PLayback"
             ) }
         }
     }
+}
+
+fun moveActivity(context: Context, target: Class<out Activity>) {
+    val intent = Intent(context, target)
+    context.startActivity(intent)
 }
 
 @Composable
@@ -85,11 +89,4 @@ modifier: Modifier = Modifier
             style = MaterialTheme.typography.bodyMedium
         )
     }
-}
-
-fun moveActivity(context: Context, target: Class<out Activity>, chordOutput: String, chordString: String) {
-    val intent = Intent(context, target)
-    intent.putExtra("chordOutput", chordOutput)
-    intent.putExtra("chordString", chordString)
-    context.startActivity(intent)
 }
