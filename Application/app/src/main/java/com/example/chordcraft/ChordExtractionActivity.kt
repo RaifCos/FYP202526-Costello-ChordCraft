@@ -37,7 +37,9 @@ import org.json.JSONObject
 private val ScreenPadding = 32.dp
 
 class ChordExtractionActivity : ComponentActivity() {
-    private val viewModel: ChordViewModel by viewModels()
+    private val viewModel: ChordViewModel by lazy {
+        (application as ChordCraftApplication).chordViewModel
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
