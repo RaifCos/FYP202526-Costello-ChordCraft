@@ -5,7 +5,14 @@ import android.net.Uri
 
 import org.json.JSONObject
 
-fun extractChords(localCall: Boolean, uri: Uri, context: Context): JSONObject {
+data class Chord(
+    val label: String,
+    val notes: List<Int>,
+    val startTime: Double,
+    val endTime: Double
+)
+
+fun extractChords(localCall: Boolean, uri: Uri, context: Context): List<Chord> {
     val modelOutput: JSONObject
     if (localCall) {
         val tempFile = cacheFileFromURI(context, uri, "audio.wav")
@@ -16,22 +23,26 @@ fun extractChords(localCall: Boolean, uri: Uri, context: Context): JSONObject {
 
     // Get MIDI values from chordProcessing.py.
     val chordJSON = callPythonJSON("chordProcessing", "getChordTemplates", modelOutput.toString())
+    val chordsArray = chordJSON.getJSONArray("chords")
 
-    return chordJSON
-}
-
-fun generateChordString(modelOutput: JSONObject): String {
-    val result = StringBuilder()
-    val chordsArray = modelOutput.getJSONArray("chords")
-
-    // Append each Chord Label to the result String.
+    val chordList = mutableListOf<Chord>()
     for (i in 0 until chordsArray.length()) {
         val chord = chordsArray.getJSONObject(i)
-        val label = chord.getString("chord")
-        result.append(label)
-        if (i < chordsArray.length() - 1) {
-            result.append(", ")
-        }
+        chordList.add(
+            Chord(
+                label = chord.getString("chord"),
+                // Cast JSONArray to List<Int>
+                notes = chord.getJSONArray("intervals").let
+                { arr ->  (0 until arr.length()).map { arr.getInt(it) } },
+                startTime = chord.getDouble("start"),
+                endTime = chord.getDouble("end")
+            )
+        )
     }
-    return result.toString()
+
+    return chordList
+}
+
+fun generateChordString(chordList: List<Chord>): String {
+    return chordList.joinToString(", ") { it.label }
 }
