@@ -5,6 +5,7 @@ import android.os.Bundle
 
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.viewModels
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
@@ -18,6 +19,7 @@ import androidx.compose.ui.platform.LocalContext
 
 import com.chaquo.python.Python
 import com.chaquo.python.android.AndroidPlatform
+import com.example.chordcraft.components.ChordViewModel
 import com.example.chordcraft.components.extractChords
 
 import kotlinx.coroutines.Dispatchers
@@ -35,27 +37,26 @@ import org.json.JSONObject
 private val ScreenPadding = 32.dp
 
 class ChordExtractionActivity : ComponentActivity() {
+    private val viewModel: ChordViewModel by viewModels()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         if (!Python.isStarted()) {
             Python.start(AndroidPlatform(this))
         }
-        val chordString = intent.getStringExtra("chordString") ?: "Your Chords will appear here."
-        val chordOutput = JSONObject(intent.getStringExtra("chordOutput") ?: """{"Error": "No Chords Found."}""")
         setContent {
-            ChordCraftTheme { ChordExtractionStructure(chordOutput, chordString) }
+            ChordCraftTheme { ChordExtractionStructure(viewModel) }
         }
     }
 }
 
 @Composable
 fun ChordExtractionStructure(
-    chordModelOutput: JSONObject,
-    chordModelString: String,
+    viewModel: ChordViewModel,
     borderBar: @Composable (() -> Unit) = { BorderBar() },
 ) {
-    var chordOutput by remember { mutableStateOf(chordModelOutput) }
-    var chordString by remember { mutableStateOf(chordModelString) }
+    val chordList by viewModel.chordList
+    val chordString = remember(chordList) { generateChordString(chordList) }
 
     Column(
         modifier = Modifier.fillMaxSize(),
@@ -81,21 +82,19 @@ fun ChordExtractionStructure(
                 .background(MaterialTheme.colorScheme.background)
         ) {
             UploadChord(
-                onOutputChange = { chordOutput = it },
-                onStringChange = { chordString = generateChordString(it) },
+                viewModel = viewModel,
                 modifier = Modifier.padding(ScreenPadding)
             )
         }
 
-        NavMenu(chordOutput.toString(), chordString)
+        NavMenu()
         borderBar()
     }
 }
 
 @Composable
 fun UploadChord(
-    onOutputChange: (JSONObject) -> Unit,
-    onStringChange: (JSONObject) -> Unit,
+    viewModel: ChordViewModel,
     modifier: Modifier = Modifier
 ) {
     val context = LocalContext.current
@@ -126,9 +125,7 @@ fun UploadChord(
         Button(onClick = {
             val uri = selectedFileUri.value
             if (uri != null) {
-                val result = extractChords(true, uri, context)
-                onOutputChange(result)
-                onStringChange(result)
+                viewModel.chordList.value = extractChords(true, uri, context)
             }
         }) {
             Text("Generate Chords! (Python)")
@@ -139,9 +136,7 @@ fun UploadChord(
             val uri = selectedFileUri.value
             if (uri != null) {
                 scope.launch(Dispatchers.IO) {
-                    val result = extractChords(false, uri, context)
-                    onOutputChange(result)
-                    onStringChange(result)
+                    viewModel.chordList.value = extractChords(false, uri, context)
                 }
             }
         }) {
@@ -156,5 +151,6 @@ fun UploadChord(
 )
 @Composable
 fun ChordExtractionPreview() {
-    ChordExtractionStructure(JSONObject("""{"Error": "No Chords Found."}"""), "Your Chords will appear here.")
+    val testViewModel = ChordViewModel().apply { chordList.value = emptyList() }
+    ChordExtractionStructure(testViewModel)
 }

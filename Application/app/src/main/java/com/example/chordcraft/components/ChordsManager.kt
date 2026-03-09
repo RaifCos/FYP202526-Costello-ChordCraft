@@ -2,6 +2,8 @@ package com.example.chordcraft.components
 
 import android.content.Context
 import android.net.Uri
+import androidx.compose.runtime.mutableStateOf
+import androidx.lifecycle.ViewModel
 
 import org.json.JSONObject
 
@@ -11,6 +13,10 @@ data class Chord(
     val startTime: Double,
     val endTime: Double
 )
+
+class ChordViewModel : ViewModel() {
+    var chordList = mutableStateOf<List<Chord>>(emptyList())
+}
 
 fun extractChords(localCall: Boolean, uri: Uri, context: Context): List<Chord> {
     val modelOutput: JSONObject

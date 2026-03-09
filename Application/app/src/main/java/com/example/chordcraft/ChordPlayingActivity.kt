@@ -4,6 +4,7 @@ import android.os.Bundle
 
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.viewModels
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
@@ -14,6 +15,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.runtime.*
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
+import com.example.chordcraft.components.ChordViewModel
+import com.example.chordcraft.components.generateChordString
 import com.example.chordcraft.components.playbackChords
 
 import com.example.chordcraft.ui.BorderBar
@@ -21,28 +24,28 @@ import com.example.chordcraft.ui.ChordDisplay
 import com.example.chordcraft.ui.NavMenu
 import com.example.chordcraft.ui.theme.ChordCraftTheme
 import org.json.JSONObject
+import kotlin.getValue
 
 private val ScreenPadding = 32.dp
 
 class ChordPlayingActivity : ComponentActivity() {
+    private val viewModel: ChordViewModel by viewModels()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val chordString = intent.getStringExtra("chordString") ?: "Your Chords will appear here."
-        val chordOutput = JSONObject(intent.getStringExtra("chordOutput") ?: """{"Error": "No Chords Found."}""")
         setContent {
-            ChordCraftTheme { ChordPlayingStructure(chordOutput, chordString) }
+            ChordCraftTheme { ChordPlayingStructure(viewModel) }
         }
     }
 }
 
 @Composable
 fun ChordPlayingStructure(
-    chordModelOutput: JSONObject,
-    chordModelString: String,
-    borderBar: @Composable () -> Unit = { BorderBar() },
+    viewModel: ChordViewModel,
+    borderBar: @Composable (() -> Unit) = { BorderBar() },
 ) {
-    var chordOutput by remember { mutableStateOf(chordModelOutput) }
-    var chordString by remember { mutableStateOf(chordModelString) }
+    val chordList by viewModel.chordList
+    val chordString = remember(chordList) { generateChordString(chordList) }
     val context = LocalContext.current
 
     Column(
@@ -70,12 +73,12 @@ fun ChordPlayingStructure(
                 .background(MaterialTheme.colorScheme.background),
             contentAlignment = Alignment.Center
         ) {
-            Button({ playbackChords(context, chordOutput) }) {
+            Button({ playbackChords(context, chordList) }) {
                 Text(text = "Play Audio")
             }
         }
 
-        NavMenu(chordOutput.toString(), chordString)
+        NavMenu()
         borderBar()
     }
 }
@@ -86,5 +89,6 @@ fun ChordPlayingStructure(
 )
 @Composable
 fun ChordPlayingPreview() {
-    ChordPlayingStructure(JSONObject("""{"Error": "No Chords Found."}"""),"Your Chords will appear here.")
+    val testViewModel = ChordViewModel().apply { chordList.value = emptyList() }
+    ChordPlayingStructure(testViewModel)
 }
