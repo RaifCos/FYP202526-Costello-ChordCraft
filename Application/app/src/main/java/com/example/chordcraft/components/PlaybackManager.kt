@@ -24,7 +24,7 @@ fun playbackChords(context: Context, chords: JSONObject) {
 
         // Render Audio File and play.
         val chordAudioFile = File(context.cacheDir, "chordAudio.wav")
-        renderChordAudio(context, chordIntervals.toString(), chordAudioFile)
+        renderChordAudio(context, chordIntervals, chordAudioFile)
         val mediaPlayer = MediaPlayer().apply {
             setDataSource(chordAudioFile.absolutePath)
             prepare()
@@ -33,10 +33,9 @@ fun playbackChords(context: Context, chords: JSONObject) {
     }
 }
 
-// Function that generates an audio file from a JSON of MIDI numebrs and chord times.
-fun renderChordAudio(context: Context, chordsJson: String, outputFile: File) {
-    val parsed = JSONObject(chordsJson)
-    val chords = parsed.getJSONArray("chords")
+// Function that generates an audio file from a JSON of MIDI numbers and chord times.
+fun renderChordAudio(context: Context, chordsJson: JSONObject, outputFile: File) {
+    val chords = chordsJson.getJSONArray("chords")
 
     // Find the end time of the final chord to get the total length.
     var totalSeconds = 2.0
