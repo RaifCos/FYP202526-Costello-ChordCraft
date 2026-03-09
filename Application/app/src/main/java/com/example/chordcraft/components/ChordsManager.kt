@@ -46,7 +46,7 @@ fun extractChords(localCall: Boolean, uri: Uri, context: Context): List<Chord> {
                 notes = chord.getJSONArray("intervals").let
                 { arr ->  (0 until arr.length()).map { arr.getInt(it) } },
                 startTime = chord.getDouble("start"),
-                endTime = chord.getDouble("end")
+                endTime = chord.getDouble("end"),
             )
         )
     }
@@ -127,7 +127,9 @@ private fun findBestGuitarChord(chord: Chord, candidatesPerNote: List<List<Guita
         // Candidate chord has been formed, now evaluate if it is the best choice.
         if (noteIndex == candidatesPerNote.size) {
             val chord = buildChord(chord, current)
-            if (bestChord == null || chord.fretSpan < bestChord.fretSpan) { bestChord = chord }
+            if (bestChord == null || chordScore(chord) < chordScore(bestChord)) {
+                bestChord = chord
+            }
             continue
         }
 
@@ -157,4 +159,9 @@ private fun buildChord(chord: Chord, notes: List<GuitarNote>): GuitarChord {
         fretSpan = maxFret - minFret,
         chord = chord,
     )
+}
+
+// Function to "Score" Chords based on Fret values to find the best fit.
+fun chordScore(chord: GuitarChord): Int {
+    return chord.fretSpan * 10 + chord.minFret
 }

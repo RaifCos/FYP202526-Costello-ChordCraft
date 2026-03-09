@@ -19,6 +19,7 @@ import androidx.compose.ui.platform.LocalContext
 import com.chaquo.python.Python
 import com.chaquo.python.android.AndroidPlatform
 import com.example.chordcraft.components.ChordViewModel
+import com.example.chordcraft.components.CreateFretBoards
 import com.example.chordcraft.components.extractChords
 
 import kotlinx.coroutines.Dispatchers
@@ -26,12 +27,9 @@ import kotlinx.coroutines.launch
 
 import com.example.chordcraft.ui.BorderBar
 import com.example.chordcraft.components.filePickerLauncher
-import com.example.chordcraft.components.generateChordString
 import com.example.chordcraft.components.getFileName
-import com.example.chordcraft.ui.ChordDisplay
 import com.example.chordcraft.ui.NavMenu
 import com.example.chordcraft.ui.theme.ChordCraftTheme
-import org.json.JSONObject
 
 private val ScreenPadding = 32.dp
 
@@ -57,7 +55,6 @@ fun ChordExtractionStructure(
     borderBar: @Composable (() -> Unit) = { BorderBar() },
 ) {
     val chordList by viewModel.chordList
-    val chordString = remember(chordList) { generateChordString(chordList) }
 
     Column(
         modifier = Modifier.fillMaxSize(),
@@ -70,10 +67,7 @@ fun ChordExtractionStructure(
                 .fillMaxWidth()
                 .background(MaterialTheme.colorScheme.background)
         ) {
-            ChordDisplay(
-                chordString,
-                modifier = Modifier.padding(ScreenPadding)
-            )
+            CreateFretBoards(chordList)
         }
 
         Box(
