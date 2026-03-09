@@ -49,10 +49,9 @@ fun ChordPlayingStructure(
 
         Box(
             modifier = Modifier
-                .fillMaxWidth()
                 .weight(1f)
-                .background(MaterialTheme.colorScheme.background),
-            contentAlignment = Alignment.Center
+                .fillMaxWidth()
+                .background(MaterialTheme.colorScheme.background)
         ) {
             CreateFretBoards(chordList)
         }
