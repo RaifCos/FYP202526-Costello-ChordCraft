@@ -8,7 +8,7 @@ fun createFretBoards(chordList: List<Chord>) {
 
     // TODO: Assemble Fret Boards into a Single UI Element (Horizontally Scrolling Menu?)
     for(guitarChord in guitarChords) {
-        createFretBoard(guitarChord)
+        drawFretBoard(guitarChord)
     }
 }
 
