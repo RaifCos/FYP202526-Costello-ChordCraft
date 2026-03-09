@@ -13,7 +13,11 @@ fun extractChords(localCall: Boolean, uri: Uri, context: Context): JSONObject {
     } else {
         modelOutput = callAPI(context, uri)
     }
-    return modelOutput
+
+    // Get MIDI values from chordProcessing.py.
+    val chordJSON = callPythonJSON("chordProcessing", "getChordTemplates", modelOutput.toString())
+
+    return chordJSON
 }
 
 fun generateChordString(modelOutput: JSONObject): String {

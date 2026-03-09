@@ -15,16 +15,12 @@ private const val BIT_DEPTH = 16
 private const val CHANNELS = 2
 
 // Function to analyze provided Chordal data, and use it to render and play an Audio output.
-fun playbackChords(context: Context, chords: JSONObject) {
+fun playbackChords(context: Context, chordsJSON: JSONObject) {
     // Only run if Chord JSON is valid.
-    if (!chords.has("Error")) {
-
-        // Get MIDI values from chordProcessing.py.
-        val chordIntervals = callPythonJSON("chordProcessing", "getChordTemplates", chords.toString())
-
+    if (!chordsJSON.has("Error")) {
         // Render Audio File and play.
         val chordAudioFile = File(context.cacheDir, "chordAudio.wav")
-        renderChordAudio(context, chordIntervals, chordAudioFile)
+        renderChordAudio(context, chordsJSON, chordAudioFile)
         val mediaPlayer = MediaPlayer().apply {
             setDataSource(chordAudioFile.absolutePath)
             prepare()
