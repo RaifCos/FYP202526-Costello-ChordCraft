@@ -9,6 +9,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.*
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.unit.*
 import androidx.compose.ui.platform.*
 import androidx.compose.ui.text.style.TextAlign
@@ -45,8 +47,6 @@ fun OpeningStructure(
                 .background(MaterialTheme.colorScheme.background)
         ) {
         Opening(
-            "Welcome to ChordCraft!",
-            "Chord extraction made easy.",
             onStartClick = { moveActivity(currContext, MainActivity::class.java) },
             modifier = Modifier
                 .padding(ScreenPadding)
@@ -57,8 +57,6 @@ fun OpeningStructure(
 
 @Composable
 fun Opening(
-    txtA: String,
-    txtB: String,
     onStartClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -68,13 +66,15 @@ fun Opening(
         modifier = modifier.fillMaxSize()
     ) {
         Text(
-            text = txtA,
+            text = "Welcome to ChordCraft!",
             style = MaterialTheme.typography.headlineLarge,
+            color = MaterialTheme.colorScheme.onBackground,
             textAlign = TextAlign.Center
         )
         Text(
-            text = txtB,
-            style = MaterialTheme.typography.bodyMedium
+            text = "Chord extraction made easy.",
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onBackground,
         )
         Button(
             onClick = { onStartClick() },
@@ -82,11 +82,12 @@ fun Opening(
             modifier = Modifier
                 .padding(ScreenPadding)
                 .height(56.dp)
-                .fillMaxWidth(0.7f)
+                .fillMaxWidth(0.7f),
         ) {
             Text(
                 text = "Start",
-                style = MaterialTheme.typography.headlineLarge
+                style = MaterialTheme.typography.headlineLarge,
+                color = MaterialTheme.colorScheme.onPrimary
             )
         }
     }

@@ -14,6 +14,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.*
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.runtime.*
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.NavHost
@@ -78,7 +80,8 @@ fun MainStructure(viewModel: ChordViewModel) {
             startDestination = "extraction",
             modifier = Modifier
                 .weight(1f)
-                .fillMaxWidth(),
+                .fillMaxWidth()
+                .background(MaterialTheme.colorScheme.background),
             enterTransition = { slideInHorizontally { it } },
             exitTransition  = { slideOutHorizontally { -it } },
             popEnterTransition = { slideInHorizontally { -it } },
@@ -111,33 +114,42 @@ fun UploadChord(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = modifier.fillMaxSize()
     ) {
-        Button(onClick = launchFilePickerCall) {
+        Button(
+            onClick = launchFilePickerCall
+        ) {
             Text(text = "Upload Audio")
         }
 
         Text(
             text = ".MP3 or .WAV",
-            style = MaterialTheme.typography.bodySmall
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onBackground
         )
 
         selectedFileUri.value?.let { uri ->
             Text(
                 text = "Selected: ${getFileName(uri)}",
                 style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onBackground
             )
         }
 
-        Button(onClick = {
+        Button(
+            onClick = {
             val uri = selectedFileUri.value
             if (uri != null) {
                 viewModel.chordList.value = extractChords(true, uri, context)
             }
         }) {
-            Text("Generate Chords! (Python)")
+            Text(
+                text = "Generate Chords! (Python)",
+                color = MaterialTheme.colorScheme.onPrimary
+            )
         }
 
         val scope = rememberCoroutineScope()
-        Button(onClick = {
+        Button(
+            onClick = {
             val uri = selectedFileUri.value
             if (uri != null) {
                 scope.launch(Dispatchers.IO) {
@@ -145,7 +157,10 @@ fun UploadChord(
                 }
             }
         }) {
-            Text("Generate Chords! (API)")
+            Text(
+                text = "Generate Chords! (API)",
+                color = MaterialTheme.colorScheme.onPrimary
+            )
         }
     }
 }
@@ -160,7 +175,10 @@ fun ChordPlayback(viewModel: ChordViewModel) {
         contentAlignment = Alignment.Center
     ) {
         Button({ playbackChords(context, chordList) }) {
-            Text("Play Audio")
+            Text(
+                text = "Play Audio",
+                color = MaterialTheme.colorScheme.onPrimary
+            )
         }
     }
 }

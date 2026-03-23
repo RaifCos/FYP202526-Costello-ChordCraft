@@ -11,6 +11,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.text.font.FontWeight
@@ -35,7 +36,14 @@ fun CreateFretBoards(chordList: List<Chord>) {
     LazyRow(
         modifier = Modifier
             .fillMaxWidth()
-            .background(ColorBackground)
+            .background(
+                brush = Brush.verticalGradient(
+                    colors = listOf(
+                        FretBackTop,
+                        FretBackBottom
+                    )
+                )
+            )
             .padding(vertical = 16.dp),
         horizontalArrangement = Arrangement.spacedBy(12.dp),
         contentPadding = PaddingValues(horizontal = 16.dp)
@@ -60,14 +68,14 @@ fun DrawFretBoard(guitarChord: GuitarChord?) {
     // Fret Board Structure:
     Column(
         modifier = Modifier
-            .background(ColorCard, RoundedCornerShape(12.dp))
+            .background(FretCard, RoundedCornerShape(12.dp))
             .padding(horizontal = 8.dp, vertical = 10.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         // Chord Label:
         Text(
             text = guitarChord.chord.label,
-            color = ColorLabel,
+            color = Label,
             fontSize = 16.sp,
             fontWeight = FontWeight.Bold,
             modifier = Modifier.padding(bottom = 6.dp)
@@ -79,7 +87,7 @@ fun DrawFretBoard(guitarChord: GuitarChord?) {
 
         Text(
             text = ("$startTimeString - $endTimeString"),
-            color = ColorLabel,
+            color = Label,
             fontSize = 16.sp,
             modifier = Modifier.padding(bottom = 6.dp)
         )
@@ -95,12 +103,12 @@ fun DrawFretBoard(guitarChord: GuitarChord?) {
                     when ( noteMap[string] ) {
                         null -> Text(
                             "✕",
-                            color = ColorMutedX,
+                            color = MutedX,
                             fontSize = 12.sp,
                             fontWeight = FontWeight.Bold)
                         0 -> Text(
                             "○",
-                            color = ColorOpenDot,
+                            color = OpenDot,
                             fontSize = 14.sp,
                             fontWeight = FontWeight.Bold)
                         else -> Spacer(Modifier.height(16.dp))
@@ -123,7 +131,7 @@ fun DrawFretBoard(guitarChord: GuitarChord?) {
                     if (startFret > 1) {
                         Text(
                             text = "$startFret",
-                            color = ColorFretNumber,
+                            color = FretNumber,
                             fontSize = 10.sp,
                             modifier = Modifier.padding(end = 3.dp)
                         )
@@ -158,7 +166,7 @@ fun DrawFretBoard(guitarChord: GuitarChord?) {
                                 )
                                 if (hasDot) {
                                     drawCircle(
-                                        color  = ColorDot,
+                                        color  = Dot,
                                         radius = dotRadius.toPx(),
                                         center = Offset(size.width / 2f, size.height / 2f)
                                     )
@@ -167,7 +175,7 @@ fun DrawFretBoard(guitarChord: GuitarChord?) {
                             if (hasDot) {
                                 Text(
                                     text       = "$fretNumber",
-                                    color      = ColorDotText,
+                                    color      = DotText,
                                     fontSize   = 9.sp,
                                     fontWeight = FontWeight.Bold,
                                     textAlign  = TextAlign.Center
@@ -185,7 +193,7 @@ fun DrawFretBoard(guitarChord: GuitarChord?) {
             stringNames.forEach { name ->
                 Text(
                     text      = name,
-                    color     = ColorFretNumber,
+                    color     = FretNumber,
                     fontSize  = 10.sp,
                     modifier  = Modifier.width(cellW),
                     textAlign = TextAlign.Center
@@ -219,7 +227,7 @@ private fun drawCell(
     if (isNut) {
         // Thick Row
         drawLine(
-            color       = ColorNut,
+            color       = Nut,
             start       = Offset(if (isFirstString) cx else 0f, 0f),
             end         = Offset(if (isLastString)  cx else cellW, 0f),
             strokeWidth = nutThickness,
@@ -228,7 +236,7 @@ private fun drawCell(
     } else {
         // Thin Wire
         drawLine(
-            color       = ColorFretWire,
+            color       = FretWire,
             start       = Offset(if (isFirstString) cx else 0f, 0f),
             end         = Offset(if (isLastString)  cx else cellW, 0f),
             strokeWidth = fretThickness,
@@ -238,7 +246,7 @@ private fun drawCell(
 
     // Actual String:
     drawLine(
-        color       = ColorString,
+        color       = GuitarString,
         start       = Offset(cx, 0f),
         end         = Offset(cx, cellH),
         strokeWidth = stringThickness,
@@ -247,7 +255,7 @@ private fun drawCell(
 
     // Fretboard Background:
     drawRect(
-        color    = ColorFretboard.copy(alpha = 0.15f),
+        color    = Fretboard.copy(alpha = 0.15f),
         topLeft  = Offset(0f, 0f),
         size     = androidx.compose.ui.geometry.Size(cellW, cellH)
     )
@@ -259,13 +267,20 @@ fun DefaultFretDisplay() {
         modifier = Modifier
             .fillMaxWidth()
             .height(266.dp)
-            .background(ColorBackground)
+            .background(
+                brush = Brush.verticalGradient(
+                    colors = listOf(
+                        FretBackTop,
+                        FretBackBottom
+                    )
+                )
+            )
             .padding(horizontal = 16.dp),
         contentAlignment = Alignment.Center
     ) {
         Text(
             text       = "Your Chords will appear here.\nUpload an Audio file to get started.",
-            color      = ColorDotText,
+            color      = DotText,
             fontSize   = 14.sp,
             fontWeight = FontWeight.Bold,
             textAlign  = TextAlign.Center

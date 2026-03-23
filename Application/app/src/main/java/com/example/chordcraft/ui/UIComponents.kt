@@ -85,7 +85,9 @@ fun NavMenu(navController: NavController) {       // added navController param
             .background(MaterialTheme.colorScheme.background),
         contentAlignment = Alignment.Center
     ) {
-        Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
+        Row(modifier = Modifier
+            .background(MaterialTheme.colorScheme.background),
+            horizontalArrangement = Arrangement.spacedBy(16.dp)) {
             Button(
                 onClick = {
                     if (currentRoute != "extraction") {

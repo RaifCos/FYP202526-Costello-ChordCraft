@@ -8,18 +8,23 @@ import androidx.compose.material3.dynamicDarkColorScheme
 import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 
 private val DarkColorScheme = darkColorScheme(
-    primary = DarkPrimary,
-    secondary = DarkSecondary,
-    tertiary = DarkTertiary,
-)
+    primary = Primary,
+    secondary = Secondary,
+    tertiary = Tertiary,
+    background = DarkBackground,
+    onPrimary = Color.White,
+    onBackground = LightText,
+    )
 
 private val LightColorScheme = lightColorScheme(
-    primary = LightPrimary,
-    secondary = LightSecondary,
-    tertiary = LightTertiary,
+    primary = Primary,
+    secondary = Secondary,
+    tertiary = Tertiary,
 
     /* Other default colors to override
     background = Color(0xFFFFFBFE),
@@ -31,6 +36,7 @@ private val LightColorScheme = lightColorScheme(
     onSurface = Color(0xFF1C1B1F),
     */
 )
+
 
 @Composable
 fun ChordCraftTheme(
