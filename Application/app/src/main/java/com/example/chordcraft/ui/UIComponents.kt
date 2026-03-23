@@ -99,25 +99,3 @@ fun moveActivity(context: Context, target: Class<out Activity>) {
     val intent = Intent(context, target)
     context.startActivity(intent)
 }
-
-@Composable
-fun ChordDisplay(
-    chords: String,
-    modifier: Modifier = Modifier
-) {
-    Column(
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = modifier.fillMaxSize()
-    ) {
-        Text(
-            text = "Your Chords",
-            style = MaterialTheme.typography.headlineLarge,
-            textAlign = TextAlign.Center
-        )
-        Text(
-            text = chords,
-            style = MaterialTheme.typography.bodyMedium
-        )
-    }
-}
