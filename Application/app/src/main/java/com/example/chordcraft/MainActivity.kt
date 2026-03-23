@@ -144,40 +144,42 @@ fun UploadChord(
             color = MaterialTheme.colorScheme.onBackground
         )
 
-        Box {
-            Button(
-                onClick = {
-                    val uri = selectedFileUri.value
-                    if (uri != null) {
-                        viewModel.chordList.value = extractChords(true, uri, context)
+        Button(
+            onClick = {
+                val uri = selectedFileUri.value
+                if (uri != null) {
+                    viewModel.chordList.value = extractChords(true, uri, context)
+                }
+            }) {
+            Text(
+                text = "Simple",
+                color = MaterialTheme.colorScheme.onPrimary
+            )
+        }
+
+        Text (
+            text = "SIMPLE TEXT ",
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onBackground
+        )
+
+        val scope = rememberCoroutineScope()
+        Button(
+            onClick = {
+                val uri = selectedFileUri.value
+                if (uri != null) {
+                    scope.launch(Dispatchers.IO) {
+                        viewModel.chordList.value = extractChords(false, uri, context)
                     }
-                }) {
+                }
+            }) {
                 Text(
-                    text = "Simple",
+                    text = "ADVANCED TEXT",
                     color = MaterialTheme.colorScheme.onPrimary
                 )
             }
-        }
 
-        Row {
-            val scope = rememberCoroutineScope()
-            Button(
-                onClick = {
-                    val uri = selectedFileUri.value
-                    if (uri != null) {
-                        scope.launch(Dispatchers.IO) {
-                            viewModel.chordList.value = extractChords(false, uri, context)
-                        }
-                    }
-                }) {
-                Text(
-                    text = "Advanced",
-                    color = MaterialTheme.colorScheme.onPrimary
-                )
-            }
-        }
-
-        Text(
+        Text (
             text = "Simple: ",
             style = MaterialTheme.typography.bodySmall,
             color = MaterialTheme.colorScheme.onBackground
