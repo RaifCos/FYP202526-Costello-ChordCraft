@@ -23,6 +23,26 @@ import com.example.chordcraft.ChordExtractionActivity
 import com.example.chordcraft.ChordPlayingActivity
 
 @Composable
+fun ActivityHeader(
+    modifier: Modifier = Modifier,
+    activityTitle: String
+) {
+    Box(
+        modifier = modifier
+            .fillMaxWidth()
+            .height(56.dp)
+            .background(MaterialTheme.colorScheme.secondary),
+        contentAlignment = Alignment.Center
+    ) {
+        Text(
+            text = activityTitle,
+            style = MaterialTheme.typography.headlineLarge,
+            textAlign = TextAlign.Center
+        )
+    }
+}
+
+@Composable
 fun BorderBar(
     modifier: Modifier = Modifier
 ) {

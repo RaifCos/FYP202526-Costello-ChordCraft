@@ -15,6 +15,7 @@ import androidx.compose.ui.platform.LocalContext
 import com.example.chordcraft.components.ChordViewModel
 import com.example.chordcraft.components.CreateFretBoards
 import com.example.chordcraft.components.playbackChords
+import com.example.chordcraft.ui.ActivityHeader
 
 import com.example.chordcraft.ui.BorderBar
 import com.example.chordcraft.ui.NavMenu
@@ -38,6 +39,7 @@ class ChordPlayingActivity : ComponentActivity() {
 fun ChordPlayingStructure(
     viewModel: ChordViewModel,
     borderBar: @Composable (() -> Unit) = { BorderBar() },
+    activityHeader: @Composable (() -> Unit) = { ActivityHeader(activityTitle = "Chord Playback") },
 ) {
     val chordList by viewModel.chordList
     val context = LocalContext.current
@@ -46,6 +48,7 @@ fun ChordPlayingStructure(
         modifier = Modifier.fillMaxSize(),
     ) {
         borderBar()
+        activityHeader()
 
         Box(
             modifier = Modifier

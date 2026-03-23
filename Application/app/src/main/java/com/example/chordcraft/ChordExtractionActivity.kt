@@ -28,6 +28,7 @@ import kotlinx.coroutines.launch
 import com.example.chordcraft.ui.BorderBar
 import com.example.chordcraft.components.filePickerLauncher
 import com.example.chordcraft.components.getFileName
+import com.example.chordcraft.ui.ActivityHeader
 import com.example.chordcraft.ui.NavMenu
 import com.example.chordcraft.ui.theme.ChordCraftTheme
 
@@ -53,6 +54,7 @@ class ChordExtractionActivity : ComponentActivity() {
 fun ChordExtractionStructure(
     viewModel: ChordViewModel,
     borderBar: @Composable (() -> Unit) = { BorderBar() },
+    activityHeader: @Composable (() -> Unit) = { ActivityHeader(activityTitle = "Chord Generation") },
 ) {
     val chordList by viewModel.chordList
 
@@ -60,7 +62,7 @@ fun ChordExtractionStructure(
         modifier = Modifier.fillMaxSize(),
     ) {
         borderBar()
-
+        activityHeader()
         Box(
             modifier = Modifier
                 .weight(1f)
