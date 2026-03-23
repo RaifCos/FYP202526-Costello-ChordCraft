@@ -23,7 +23,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 
 @Composable
 fun ActivityHeader(
-    navController: NavController,           // added
+    navController: NavController,
     modifier: Modifier = Modifier,
 ) {
     val navBackStackEntry by navController.currentBackStackEntryAsState()
