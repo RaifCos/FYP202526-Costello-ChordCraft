@@ -36,6 +36,7 @@ fun CreateFretBoards(chordList: List<Chord>) {
     LazyRow(
         modifier = Modifier
             .fillMaxWidth()
+            .fillMaxHeight()
             .background(
                 brush = Brush.verticalGradient(
                     colors = listOf(

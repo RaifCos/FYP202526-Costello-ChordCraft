@@ -73,7 +73,7 @@ fun BorderBar(modifier: Modifier = Modifier) {
 }
 
 @Composable
-fun NavMenu(navController: NavController) {       // added navController param
+fun NavMenu(navController: NavController) {
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
     val iconSet = Icons.Default

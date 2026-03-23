@@ -15,7 +15,6 @@ import androidx.compose.ui.*
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.NavHost
@@ -59,6 +58,7 @@ class MainActivity : ComponentActivity() {
 fun MainStructure(viewModel: ChordViewModel) {
     val navController = rememberNavController()
     val chordList by viewModel.chordList
+    val selectedFileUri = remember { mutableStateOf<Uri?>(null) }
 
     Column(modifier = Modifier.fillMaxSize()) {
         BorderBar()
@@ -67,11 +67,26 @@ fun MainStructure(viewModel: ChordViewModel) {
         // Fret Boards Element stays constant between menus.
         Box(
             modifier = Modifier
-                .weight(1f)
+                .wrapContentHeight()
                 .fillMaxWidth()
                 .background(MaterialTheme.colorScheme.background)
         ) {
             CreateFretBoards(chordList)
+        }
+
+        Box(
+            modifier = Modifier
+                .wrapContentHeight()
+                .fillMaxWidth()
+                .background(MaterialTheme.colorScheme.background)
+        ) {
+            selectedFileUri.value?.let { uri ->
+                Text(
+                    text = "Audio: ${getFileName(uri)}",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onBackground
+                )
+            }
         }
 
         // Alternating Extraction/Playback menus.
@@ -88,7 +103,10 @@ fun MainStructure(viewModel: ChordViewModel) {
             popExitTransition  = { slideOutHorizontally { it } },
         ) {
             composable("extraction") {
-                UploadChord(viewModel, modifier = Modifier.padding(32.dp))
+                UploadChord(
+                    viewModel,
+                    selectedFileUri,
+                    modifier = Modifier.padding(32.dp))
             }
             composable("playback") {
                 ChordPlayback(viewModel)
@@ -103,10 +121,10 @@ fun MainStructure(viewModel: ChordViewModel) {
 @Composable
 fun UploadChord(
     viewModel: ChordViewModel,
+    selectedFileUri: MutableState<Uri?>,
     modifier: Modifier = Modifier
 ) {
     val context = LocalContext.current
-    val selectedFileUri = remember { mutableStateOf<Uri?>(null) }
     val launchFilePickerCall = filePickerLauncher(selectedFileUri)
 
     Column(
@@ -117,51 +135,53 @@ fun UploadChord(
         Button(
             onClick = launchFilePickerCall
         ) {
-            Text(text = "Upload Audio")
+            Text(text = "Select Audio")
         }
 
         Text(
-            text = ".MP3 or .WAV",
+            text = "Upload an .MP3 or .WAV audio file to begin generating chords.",
             style = MaterialTheme.typography.bodySmall,
             color = MaterialTheme.colorScheme.onBackground
         )
 
-        selectedFileUri.value?.let { uri ->
-            Text(
-                text = "Selected: ${getFileName(uri)}",
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onBackground
-            )
+        Box {
+            Button(
+                onClick = {
+                    val uri = selectedFileUri.value
+                    if (uri != null) {
+                        viewModel.chordList.value = extractChords(true, uri, context)
+                    }
+                }) {
+                Text(
+                    text = "Simple",
+                    color = MaterialTheme.colorScheme.onPrimary
+                )
+            }
         }
 
-        Button(
-            onClick = {
-            val uri = selectedFileUri.value
-            if (uri != null) {
-                viewModel.chordList.value = extractChords(true, uri, context)
+        Row {
+            val scope = rememberCoroutineScope()
+            Button(
+                onClick = {
+                    val uri = selectedFileUri.value
+                    if (uri != null) {
+                        scope.launch(Dispatchers.IO) {
+                            viewModel.chordList.value = extractChords(false, uri, context)
+                        }
+                    }
+                }) {
+                Text(
+                    text = "Advanced",
+                    color = MaterialTheme.colorScheme.onPrimary
+                )
             }
-        }) {
-            Text(
-                text = "Generate Chords! (Python)",
-                color = MaterialTheme.colorScheme.onPrimary
-            )
         }
 
-        val scope = rememberCoroutineScope()
-        Button(
-            onClick = {
-            val uri = selectedFileUri.value
-            if (uri != null) {
-                scope.launch(Dispatchers.IO) {
-                    viewModel.chordList.value = extractChords(false, uri, context)
-                }
-            }
-        }) {
-            Text(
-                text = "Generate Chords! (API)",
-                color = MaterialTheme.colorScheme.onPrimary
-            )
-        }
+        Text(
+            text = "Simple: ",
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onBackground
+        )
     }
 }
 
