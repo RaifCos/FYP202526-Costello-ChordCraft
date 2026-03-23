@@ -69,26 +69,11 @@ fun MainStructure(viewModel: ChordViewModel) {
         // Fret Boards Element stays constant between menus.
         Box(
             modifier = Modifier
-                .height(266.dp) 
+                .height(266.dp)
                 .fillMaxWidth()
                 .background(MaterialTheme.colorScheme.background)
         ) {
             CreateFretBoards(chordList)
-        }
-
-        Box(
-            modifier = Modifier
-                .wrapContentHeight()
-                .fillMaxWidth()
-                .background(MaterialTheme.colorScheme.background)
-        ) {
-            selectedFileUri.value?.let { uri ->
-                Text(
-                    text = "Audio: ${getFileName(uri)}",
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onBackground
-                )
-            }
         }
 
         // Alternating Extraction/Playback menus.
@@ -127,6 +112,7 @@ fun UploadChord(
     modifier: Modifier = Modifier
 ) {
     // File Selection
+    val uri = selectedFileUri.value
     val context = LocalContext.current
     val launchFilePickerCall = filePickerLauncher(selectedFileUri)
 
@@ -137,12 +123,20 @@ fun UploadChord(
     val simpleText = "STFT-based model that is quicker but less accurate. Best suited for general analysis and playback."
     val advancedText = "AI model that generates much more accurate results. Best suited for professional annotation. *Requires an active internet connection."
 
-
     Column(
         verticalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterVertically),
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = modifier.fillMaxSize()
     ) {
+
+        Text(
+            text = if (uri != null) "Audio Selected: ${getFileName(uri)}" else "Audio Selected: None",
+            style = MaterialTheme.typography.bodyMedium,
+            color = if (uri != null)
+                MaterialTheme.colorScheme.onBackground
+            else
+                MaterialTheme.colorScheme.onBackground.copy(alpha = 0.5f)
+        )
 
         Text(
             text = "Upload an .MP3 or .WAV audio file and choose a model to begin generating chords.",
