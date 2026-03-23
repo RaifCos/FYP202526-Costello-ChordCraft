@@ -24,11 +24,7 @@
         </activity>
 
         <activity
-            android:name=".ChordExtractionActivity"
-            android:exported="false" />
-
-        <activity
-            android:name=".ChordPlayingActivity"
+            android:name=".MainActivity"
             android:exported="false" />
 
     </application>
