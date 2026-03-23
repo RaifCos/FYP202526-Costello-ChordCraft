@@ -60,14 +60,16 @@ fun MainStructure(viewModel: ChordViewModel) {
     val chordList by viewModel.chordList
     val selectedFileUri = remember { mutableStateOf<Uri?>(null) }
 
-    Column(modifier = Modifier.fillMaxSize()) {
+    Column(
+        modifier = Modifier.fillMaxSize()
+    ) {
         BorderBar()
         ActivityHeader(navController)
 
         // Fret Boards Element stays constant between menus.
         Box(
             modifier = Modifier
-                .wrapContentHeight()
+                .height(266.dp) 
                 .fillMaxWidth()
                 .background(MaterialTheme.colorScheme.background)
         ) {
@@ -124,41 +126,50 @@ fun UploadChord(
     selectedFileUri: MutableState<Uri?>,
     modifier: Modifier = Modifier
 ) {
+    // File Selection
     val context = LocalContext.current
     val launchFilePickerCall = filePickerLauncher(selectedFileUri)
 
+    // Model Selection
+    val options = listOf("Simple", "Advanced")
+    var selectedIndex by remember { mutableIntStateOf(0) }
+    val isAdvanced = selectedIndex == 1
+    val simpleText = "STFT-based model that is quicker but less accurate. Best suited for general analysis and playback."
+    val advancedText = "AI model that generates much more accurate results. Best suited for professional annotation. *Requires an active internet connection."
+
+
     Column(
-        verticalArrangement = Arrangement.Center,
+        verticalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterVertically),
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = modifier.fillMaxSize()
     ) {
+
+        Text(
+            text = "Upload an .MP3 or .WAV audio file and choose a model to begin generating chords.",
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onBackground
+        )
+
         Button(
             onClick = launchFilePickerCall
         ) {
             Text(text = "Select Audio")
         }
 
-        Text(
-            text = "Upload an .MP3 or .WAV audio file to begin generating chords.",
-            style = MaterialTheme.typography.bodySmall,
-            color = MaterialTheme.colorScheme.onBackground
-        )
-
-        Button(
-            onClick = {
-                val uri = selectedFileUri.value
-                if (uri != null) {
-                    viewModel.chordList.value = extractChords(true, uri, context)
+        SingleChoiceSegmentedButtonRow {
+            options.forEachIndexed { index, label ->
+                SegmentedButton(
+                    shape = SegmentedButtonDefaults.itemShape(index = index, count = options.size),
+                    onClick = { selectedIndex = index },
+                    selected = selectedIndex == index
+                ) {
+                    Text(label)
                 }
-            }) {
-            Text(
-                text = "Simple",
-                color = MaterialTheme.colorScheme.onPrimary
-            )
+            }
         }
 
-        Text (
-            text = "SIMPLE TEXT ",
+        Text(
+            text = if (isAdvanced) advancedText else simpleText,
             style = MaterialTheme.typography.bodySmall,
             color = MaterialTheme.colorScheme.onBackground
         )
@@ -168,34 +179,40 @@ fun UploadChord(
             onClick = {
                 val uri = selectedFileUri.value
                 if (uri != null) {
-                    scope.launch(Dispatchers.IO) {
-                        viewModel.chordList.value = extractChords(false, uri, context)
+                    if (isAdvanced) {
+                        scope.launch(Dispatchers.IO) {
+                            viewModel.chordList.value = extractChords(false, uri, context)
+                        }
+                    } else {
+                        viewModel.chordList.value = extractChords(true, uri, context)
                     }
                 }
-            }) {
-                Text(
-                    text = "ADVANCED TEXT",
-                    color = MaterialTheme.colorScheme.onPrimary
-                )
             }
-
-        Text (
-            text = "Simple: ",
-            style = MaterialTheme.typography.bodySmall,
-            color = MaterialTheme.colorScheme.onBackground
-        )
+        ) {
+            Text("Generate Chords!")
+        }
     }
 }
 
 @Composable
-fun ChordPlayback(viewModel: ChordViewModel) {
+fun ChordPlayback(
+    viewModel: ChordViewModel,
+    modifier: Modifier = Modifier
+) {
     val chordList by viewModel.chordList
     val context = LocalContext.current
 
-    Box(
-        modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center
+    Column(
+        verticalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterVertically),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = modifier.fillMaxSize()
     ) {
+        Text(
+            text = "Generate and hear a recreation of your music in real time!",
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onBackground
+        )
+
         Button({ playbackChords(context, chordList) }) {
             Text(
                 text = "Play Audio",

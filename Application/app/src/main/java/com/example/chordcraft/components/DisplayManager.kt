@@ -280,7 +280,7 @@ fun DefaultFretDisplay() {
         contentAlignment = Alignment.Center
     ) {
         Text(
-            text       = "Your Chords will appear here.\nUpload an Audio file to get started.",
+            text       = "Your Chords will appear here.\nFollow the instructions below to generate them.",
             color      = DotText,
             fontSize   = 14.sp,
             fontWeight = FontWeight.Bold,
