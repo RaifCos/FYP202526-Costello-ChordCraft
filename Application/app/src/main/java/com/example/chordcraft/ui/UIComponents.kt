@@ -9,8 +9,8 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
@@ -18,34 +18,38 @@ import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material3.Text
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.text.style.TextAlign
-
-import com.example.chordcraft.ChordExtractionActivity
-import com.example.chordcraft.ChordPlayingActivity
+import androidx.navigation.NavController
+import androidx.navigation.compose.currentBackStackEntryAsState
 
 @Composable
 fun ActivityHeader(
+    navController: NavController,           // added
     modifier: Modifier = Modifier,
-    activityTitle: String
 ) {
+    val navBackStackEntry by navController.currentBackStackEntryAsState()
+    val title = when (navBackStackEntry?.destination?.route) {
+        "extraction" -> "Chord Generation"
+        "playback"   -> "Chord Playback"
+        else         -> ""
+    }
+
     Box(
         modifier = modifier
             .fillMaxWidth()
             .height(56.dp)
-            .background(MaterialTheme.colorScheme.secondary),
+            .background(MaterialTheme.colorScheme.primary),
         contentAlignment = Alignment.Center
     ) {
         Text(
-            text = activityTitle,
-            style = MaterialTheme.typography.headlineLarge,
-            textAlign = TextAlign.Center
+            text = title,
+            style = MaterialTheme.typography.titleLarge,
+            color = MaterialTheme.colorScheme.onPrimary
         )
     }
 }
 
 @Composable
-fun BorderBar(
-    modifier: Modifier = Modifier
-) {
+fun BorderBar(modifier: Modifier = Modifier) {
     Box(
         modifier = modifier
             .fillMaxWidth()
@@ -55,31 +59,38 @@ fun BorderBar(
 }
 
 @Composable
-fun NavMenu () {
-    val context = LocalContext.current
+fun NavMenu(navController: NavController) {       // added navController param
+    val navBackStackEntry by navController.currentBackStackEntryAsState()
+    val currentRoute = navBackStackEntry?.destination?.route
     val iconSet = Icons.Default
+
     Box(
         modifier = Modifier
             .fillMaxWidth()
             .height(50.dp)
             .background(MaterialTheme.colorScheme.background),
-            contentAlignment = Alignment.Center
+        contentAlignment = Alignment.Center
     ) {
-        Row (
-            horizontalArrangement = Arrangement.spacedBy(16.dp)
-        ) {
-            Button( { moveActivity(context, ChordExtractionActivity::class.java) } )
-            {
-                Icon(
-                imageVector = iconSet.Home,
-                contentDescription = "Chord Extraction"
-            ) }
+        Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
+            Button(
+                onClick = {
+                    if (currentRoute != "extraction") {
+                        navController.navigate("extraction")
+                    }
+                }
+            ) {
+                Icon(imageVector = iconSet.Home, contentDescription = "Chord Extraction")
+            }
 
-            Button( { moveActivity(context, ChordPlayingActivity::class.java) } )
-            { Icon(
-                imageVector = iconSet.PlayArrow,
-                contentDescription = "Chord PLayback"
-            ) }
+            Button(
+                onClick = {
+                    if (currentRoute != "playback") {
+                        navController.navigate("playback")
+                    }
+                }
+            ) {
+                Icon(imageVector = iconSet.PlayArrow, contentDescription = "Chord Playback")
+            }
         }
     }
 }
@@ -91,8 +102,8 @@ fun moveActivity(context: Context, target: Class<out Activity>) {
 
 @Composable
 fun ChordDisplay(
-chords: String,
-modifier: Modifier = Modifier
+    chords: String,
+    modifier: Modifier = Modifier
 ) {
     Column(
         verticalArrangement = Arrangement.Center,
