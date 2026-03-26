@@ -17,7 +17,7 @@ import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material3.Text
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.graphics.Brush
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
 
@@ -37,7 +37,14 @@ fun ActivityHeader(
         modifier = modifier
             .fillMaxWidth()
             .height(56.dp)
-            .background(MaterialTheme.colorScheme.primary),
+            .background(
+                brush = Brush.horizontalGradient(
+                    colors = listOf(
+                        MaterialTheme.colorScheme.primary,
+                        MaterialTheme.colorScheme.secondary
+                    )
+                )
+            ),
         contentAlignment = Alignment.Center
     ) {
         Text(
@@ -54,12 +61,19 @@ fun BorderBar(modifier: Modifier = Modifier) {
         modifier = modifier
             .fillMaxWidth()
             .height(56.dp)
-            .background(MaterialTheme.colorScheme.primary)
+            .background(
+                brush = Brush.horizontalGradient(
+                    colors = listOf(
+                        MaterialTheme.colorScheme.primary,
+                        MaterialTheme.colorScheme.secondary
+                    )
+                )
+            )
     )
 }
 
 @Composable
-fun NavMenu(navController: NavController) {       // added navController param
+fun NavMenu(navController: NavController) {
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
     val iconSet = Icons.Default
@@ -71,7 +85,9 @@ fun NavMenu(navController: NavController) {       // added navController param
             .background(MaterialTheme.colorScheme.background),
         contentAlignment = Alignment.Center
     ) {
-        Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
+        Row(modifier = Modifier
+            .background(MaterialTheme.colorScheme.background),
+            horizontalArrangement = Arrangement.spacedBy(16.dp)) {
             Button(
                 onClick = {
                     if (currentRoute != "extraction") {
@@ -98,26 +114,4 @@ fun NavMenu(navController: NavController) {       // added navController param
 fun moveActivity(context: Context, target: Class<out Activity>) {
     val intent = Intent(context, target)
     context.startActivity(intent)
-}
-
-@Composable
-fun ChordDisplay(
-    chords: String,
-    modifier: Modifier = Modifier
-) {
-    Column(
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = modifier.fillMaxSize()
-    ) {
-        Text(
-            text = "Your Chords",
-            style = MaterialTheme.typography.headlineLarge,
-            textAlign = TextAlign.Center
-        )
-        Text(
-            text = chords,
-            style = MaterialTheme.typography.bodyMedium
-        )
-    }
 }

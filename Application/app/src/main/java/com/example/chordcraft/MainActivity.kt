@@ -14,6 +14,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.*
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.runtime.*
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.NavHost
@@ -57,15 +58,18 @@ class MainActivity : ComponentActivity() {
 fun MainStructure(viewModel: ChordViewModel) {
     val navController = rememberNavController()
     val chordList by viewModel.chordList
+    val selectedFileUri = remember { mutableStateOf<Uri?>(null) }
 
-    Column(modifier = Modifier.fillMaxSize()) {
+    Column(
+        modifier = Modifier.fillMaxSize()
+    ) {
         BorderBar()
         ActivityHeader(navController)
 
         // Fret Boards Element stays constant between menus.
         Box(
             modifier = Modifier
-                .weight(1f)
+                .height(266.dp)
                 .fillMaxWidth()
                 .background(MaterialTheme.colorScheme.background)
         ) {
@@ -78,14 +82,18 @@ fun MainStructure(viewModel: ChordViewModel) {
             startDestination = "extraction",
             modifier = Modifier
                 .weight(1f)
-                .fillMaxWidth(),
+                .fillMaxWidth()
+                .background(MaterialTheme.colorScheme.background),
             enterTransition = { slideInHorizontally { it } },
             exitTransition  = { slideOutHorizontally { -it } },
             popEnterTransition = { slideInHorizontally { -it } },
             popExitTransition  = { slideOutHorizontally { it } },
         ) {
             composable("extraction") {
-                UploadChord(viewModel, modifier = Modifier.padding(32.dp))
+                UploadChord(
+                    viewModel,
+                    selectedFileUri,
+                    modifier = Modifier.padding(32.dp))
             }
             composable("playback") {
                 ChordPlayback(viewModel)
@@ -100,67 +108,110 @@ fun MainStructure(viewModel: ChordViewModel) {
 @Composable
 fun UploadChord(
     viewModel: ChordViewModel,
+    selectedFileUri: MutableState<Uri?>,
     modifier: Modifier = Modifier
 ) {
+    // File Selection
+    val uri = selectedFileUri.value
     val context = LocalContext.current
-    val selectedFileUri = remember { mutableStateOf<Uri?>(null) }
     val launchFilePickerCall = filePickerLauncher(selectedFileUri)
 
+    // Model Selection
+    val options = listOf("Simple", "Advanced")
+    var selectedIndex by remember { mutableIntStateOf(0) }
+    val isAdvanced = selectedIndex == 1
+    val simpleText = "STFT-based model that is quicker but less accurate. Best suited for general analysis and playback."
+    val advancedText = "AI model that generates much more accurate results. Best suited for professional annotation. *Requires an active internet connection."
+
     Column(
-        verticalArrangement = Arrangement.Center,
+        verticalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterVertically),
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = modifier.fillMaxSize()
     ) {
-        Button(onClick = launchFilePickerCall) {
-            Text(text = "Upload Audio")
+
+        Text(
+            text = if (uri != null) "Audio Selected: ${getFileName(uri)}" else "Audio Selected: None",
+            style = MaterialTheme.typography.bodyMedium,
+            color = if (uri != null)
+                MaterialTheme.colorScheme.onBackground
+            else
+                MaterialTheme.colorScheme.onBackground.copy(alpha = 0.5f)
+        )
+
+        Text(
+            text = "Upload an .MP3 or .WAV audio file and choose a model to begin generating chords.",
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onBackground
+        )
+
+        Button(
+            onClick = launchFilePickerCall
+        ) {
+            Text(text = "Select Audio")
+        }
+
+        SingleChoiceSegmentedButtonRow {
+            options.forEachIndexed { index, label ->
+                SegmentedButton(
+                    shape = SegmentedButtonDefaults.itemShape(index = index, count = options.size),
+                    onClick = { selectedIndex = index },
+                    selected = selectedIndex == index
+                ) {
+                    Text(label)
+                }
+            }
         }
 
         Text(
-            text = ".MP3 or .WAV",
-            style = MaterialTheme.typography.bodySmall
+            text = if (isAdvanced) advancedText else simpleText,
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onBackground
         )
 
-        selectedFileUri.value?.let { uri ->
-            Text(
-                text = "Selected: ${getFileName(uri)}",
-                style = MaterialTheme.typography.bodyMedium,
-            )
-        }
-
-        Button(onClick = {
-            val uri = selectedFileUri.value
-            if (uri != null) {
-                viewModel.chordList.value = extractChords(true, uri, context)
-            }
-        }) {
-            Text("Generate Chords! (Python)")
-        }
-
         val scope = rememberCoroutineScope()
-        Button(onClick = {
-            val uri = selectedFileUri.value
-            if (uri != null) {
-                scope.launch(Dispatchers.IO) {
-                    viewModel.chordList.value = extractChords(false, uri, context)
+        Button(
+            onClick = {
+                val uri = selectedFileUri.value
+                if (uri != null) {
+                    if (isAdvanced) {
+                        scope.launch(Dispatchers.IO) {
+                            viewModel.chordList.value = extractChords(false, uri, context)
+                        }
+                    } else {
+                        viewModel.chordList.value = extractChords(true, uri, context)
+                    }
                 }
             }
-        }) {
-            Text("Generate Chords! (API)")
+        ) {
+            Text("Generate Chords!")
         }
     }
 }
 
 @Composable
-fun ChordPlayback(viewModel: ChordViewModel) {
+fun ChordPlayback(
+    viewModel: ChordViewModel,
+    modifier: Modifier = Modifier
+) {
     val chordList by viewModel.chordList
     val context = LocalContext.current
 
-    Box(
-        modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center
+    Column(
+        verticalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterVertically),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = modifier.fillMaxSize()
     ) {
+        Text(
+            text = "Generate and hear a recreation of your music in real time!",
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onBackground
+        )
+
         Button({ playbackChords(context, chordList) }) {
-            Text("Play Audio")
+            Text(
+                text = "Play Audio",
+                color = MaterialTheme.colorScheme.onPrimary
+            )
         }
     }
 }

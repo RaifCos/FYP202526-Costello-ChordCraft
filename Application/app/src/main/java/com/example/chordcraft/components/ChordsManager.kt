@@ -77,7 +77,7 @@ data class GuitarChord(
     val chord: Chord
 )
 
-// MIDI Numbers for each of the open strings (E4, B3, G3, D3, A2, E2)
+// MIDI Numbers for each of the open strings (E4, B3, G3, D3, A2, E2d)
 val OPEN_NOTES = intArrayOf(64, 59, 55, 50, 45, 40)
 private const val MAX_FRET = 24
 private const val MAX_FRET_SPAN = 4
@@ -87,7 +87,7 @@ fun generateGuitarChords(chordList: List<Chord>): List<GuitarChord?> {
     val output = mutableListOf<GuitarChord?>()
 
     for (chord in chordList) {
-        // Retrieve Chord from JSON.
+        // Retrieve Chord Data.
         val chordNotes = chord.notes
         val midiNotes = (0 until chordNotes.size).map { chordNotes[it] }
 

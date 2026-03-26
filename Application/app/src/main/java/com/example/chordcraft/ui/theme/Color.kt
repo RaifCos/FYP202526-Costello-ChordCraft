@@ -6,26 +6,26 @@ import androidx.compose.ui.graphics.Color
 /*     MAIN APP COLOURS     */
 /*==========================*/
 
-val Purple80        = Color(0xFFD0BCFF)
-val PurpleGrey80    = Color(0xFFCCC2DC)
-val Pink80          = Color(0xFFEFB8C8)
-val Purple40        = Color(0xFF6650a4)
-val PurpleGrey40    = Color(0xFF625b71)
-val Pink40          = Color(0xFF7D5260)
+val Primary         = Color(0xFF6650a4)
+val Secondary       = Color(0xFF3E20A1)
+val Tertiary        = Color(0xFF2C0D98)
+val DarkBackground  = Color(0xFF26242C)
+val LightText       = Color(0xFFFFFCFC)
 
 /*==========================*/
 /*    FRET BOARD COLOURS    */
 /*==========================*/
 
-val ColorBackground = Color(0xFF30264B)
-val ColorCard       = Color(0xFF2A1767)
-val ColorFretboard  = Color(0xFF8B6914)
-val ColorFretWire   = Color(0xFFD4AF37)
-val ColorNut        = Color(0xFFF5F0E8)
-val ColorString     = Color(0xFFB8B8B8)
-val ColorDot        = Color(0xFFE94594)
-val ColorDotText    = Color(0xFFFFFFFF)
-val ColorOpenDot    = Color(0xFF4CAF50)
-val ColorMutedX     = Color(0xFF757575)
-val ColorLabel      = Color(0xFFE0E0E0)
-val ColorFretNumber = Color(0xFF9E9E9E)
+val FretBackTop     = Color(0xFF2E2350)
+val FretBackBottom  = Color(0xFF1D0D52)
+val FretCard        = Color(0xFF2A1767)
+val Fretboard       = Color(0xFF8B6914)
+val FretWire        = Color(0xFFD4AF37)
+val Nut             = Color(0xFFF5F0E8)
+val GuitarString    = Color(0xFFB8B8B8)
+val Dot             = Color(0xFFE94594)
+val DotText         = Color(0xFFFFFFFF)
+val OpenDot         = Color(0xFF4CAF50)
+val MutedX          = Color(0xFF757575)
+val Label           = Color(0xFFE0E0E0)
+val FretNumber      = Color(0xFF9E9E9E)

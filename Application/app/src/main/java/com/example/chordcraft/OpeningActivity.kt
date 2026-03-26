@@ -9,8 +9,16 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.*
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Shadow
 import androidx.compose.ui.unit.*
 import androidx.compose.ui.platform.*
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 
@@ -42,11 +50,16 @@ fun OpeningStructure(
             modifier = Modifier
                 .weight(1f)
                 .fillMaxWidth()
-                .background(MaterialTheme.colorScheme.background)
+                .background(
+                    brush = Brush.horizontalGradient(
+                        colors = listOf(
+                            MaterialTheme.colorScheme.primary,
+                            MaterialTheme.colorScheme.secondary
+                        )
+                    )
+                )
         ) {
         Opening(
-            "Welcome to ChordCraft!",
-            "Chord extraction made easy.",
             onStartClick = { moveActivity(currContext, MainActivity::class.java) },
             modifier = Modifier
                 .padding(ScreenPadding)
@@ -57,8 +70,6 @@ fun OpeningStructure(
 
 @Composable
 fun Opening(
-    txtA: String,
-    txtB: String,
     onStartClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -68,25 +79,44 @@ fun Opening(
         modifier = modifier.fillMaxSize()
     ) {
         Text(
-            text = txtA,
-            style = MaterialTheme.typography.headlineLarge,
+            text = "ChordCraft",
+            fontSize = 60.sp,
+            style = TextStyle(
+                fontSize = 36.sp,
+                fontStyle = FontStyle.Italic,
+                fontWeight = FontWeight.Bold,
+                shadow = Shadow(
+                    color = Color.Gray,
+                    offset = Offset(5.0f, 10.0f),
+                    blurRadius = 5f
+                )
+            ),
+            color = Color(0xFFFFFCFC),
             textAlign = TextAlign.Center
         )
         Text(
-            text = txtB,
-            style = MaterialTheme.typography.bodyMedium
+            text = "Chord extraction made easy.",
+            style = TextStyle(
+                fontSize = 24.sp,
+                fontStyle = FontStyle.Italic,
+            ),
+            color = Color(0xFFFFFCFC),
         )
         Button(
             onClick = { onStartClick() },
             shape = RoundedCornerShape(16.dp),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = Color(0xFF2C0677)
+            ),
             modifier = Modifier
                 .padding(ScreenPadding)
                 .height(56.dp)
-                .fillMaxWidth(0.7f)
+                .fillMaxWidth(0.7f),
         ) {
             Text(
                 text = "Start",
-                style = MaterialTheme.typography.headlineLarge
+                style = MaterialTheme.typography.headlineLarge,
+                color = Color.White
             )
         }
     }
