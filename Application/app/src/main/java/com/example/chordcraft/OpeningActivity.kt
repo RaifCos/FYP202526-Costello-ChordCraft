@@ -10,9 +10,15 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Shadow
 import androidx.compose.ui.unit.*
 import androidx.compose.ui.platform.*
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 
@@ -44,7 +50,14 @@ fun OpeningStructure(
             modifier = Modifier
                 .weight(1f)
                 .fillMaxWidth()
-                .background(MaterialTheme.colorScheme.background)
+                .background(
+                    brush = Brush.horizontalGradient(
+                        colors = listOf(
+                            MaterialTheme.colorScheme.primary,
+                            MaterialTheme.colorScheme.secondary
+                        )
+                    )
+                )
         ) {
         Opening(
             onStartClick = { moveActivity(currContext, MainActivity::class.java) },
@@ -66,19 +79,35 @@ fun Opening(
         modifier = modifier.fillMaxSize()
     ) {
         Text(
-            text = "Welcome to ChordCraft!",
-            style = MaterialTheme.typography.headlineLarge,
-            color = MaterialTheme.colorScheme.onBackground,
+            text = "ChordCraft",
+            fontSize = 60.sp,
+            style = TextStyle(
+                fontSize = 36.sp,
+                fontStyle = FontStyle.Italic,
+                fontWeight = FontWeight.Bold,
+                shadow = Shadow(
+                    color = Color.Gray,
+                    offset = Offset(5.0f, 10.0f),
+                    blurRadius = 5f
+                )
+            ),
+            color = Color(0xFFFFFCFC),
             textAlign = TextAlign.Center
         )
         Text(
             text = "Chord extraction made easy.",
-            style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.onBackground,
+            style = TextStyle(
+                fontSize = 24.sp,
+                fontStyle = FontStyle.Italic,
+            ),
+            color = Color(0xFFFFFCFC),
         )
         Button(
             onClick = { onStartClick() },
             shape = RoundedCornerShape(16.dp),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = Color(0xFF2C0677)
+            ),
             modifier = Modifier
                 .padding(ScreenPadding)
                 .height(56.dp)
@@ -87,7 +116,7 @@ fun Opening(
             Text(
                 text = "Start",
                 style = MaterialTheme.typography.headlineLarge,
-                color = MaterialTheme.colorScheme.onPrimary
+                color = Color.White
             )
         }
     }
