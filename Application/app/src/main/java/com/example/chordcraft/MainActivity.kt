@@ -231,25 +231,75 @@ fun LiveRecorder(
     viewModel: ChordViewModel,
     modifier: Modifier = Modifier
 ) {
+    val context = LocalContext.current
+    val scope = rememberCoroutineScope()
+
+    var isRecording by remember { mutableStateOf(false) }
+    var liveRecording by remember { mutableStateOf<kotlinx.coroutines.Job?>(null) }
+
+    // Get Permission for Recording.
+    val permissionLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { granted ->
+        if (!granted) {
+            Toast.makeText(context, "Microphone permission is required.", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    LaunchedEffect(Unit) {
+        if (ContextCompat.checkSelfPermission
+                (context, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED)
+        { permissionLauncher.launch(Manifest.permission.RECORD_AUDIO) }
+    }
+
     Column(
         verticalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterVertically),
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = modifier.fillMaxSize()
     ) {
         Text(
-            text = "Play Music and get your chords in realtime!",
+            text = if (isRecording)
+                "Listening for Chords..."
+            else
+                "Start playing and hear what chord you're playing in real time!",
             style = MaterialTheme.typography.bodySmall,
             color = MaterialTheme.colorScheme.onBackground
         )
 
         Button(
             onClick = {
+                // Toggle Recording Mode.
+                isRecording = !isRecording
+                if (isRecording) {
+                    // Start Recording (If audio permission is granted).
+                    if (ContextCompat.checkSelfPermission(context, Manifest.permission.RECORD_AUDIO)
+                        != PackageManager.PERMISSION_GRANTED
+                    ) {
+                        permissionLauncher.launch(Manifest.permission.RECORD_AUDIO)
+                        return@Button
+                    }
+                    // Start Live Recording Coroutine.
+                    liveRecording = scope.launch(Dispatchers.IO) {
+                        liveRecordingHandler(context, viewModel)
+                    }
+                } else {
+                    // Stop Recording.
+                    liveRecording?.cancel()
+                    liveRecording = null
+                }
             }
         ) {
             Text(
-                text = "Start Recording",
+                text = if (isRecording) "Stop Recording" else "Start Recording",
                 color = MaterialTheme.colorScheme.onPrimary
             )
+        }
+    }
+
+    // Stop Live Recording Coroutine when menus are changed.
+    DisposableEffect(Unit) {
+        onDispose {
+            liveRecording?.cancel()
         }
     }
 }
