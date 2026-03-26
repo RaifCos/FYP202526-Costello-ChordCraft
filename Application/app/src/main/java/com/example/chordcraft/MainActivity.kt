@@ -68,9 +68,11 @@ fun MainStructure(viewModel: ChordViewModel) {
     val selectedFileUri = remember { mutableStateOf<Uri?>(null) }
 
     Column(
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier
+            .fillMaxSize()
+            .background(MaterialTheme.colorScheme.background)
     ) {
-        BorderBar()
+        BorderBar(height=28)
         ActivityHeader(navController)
 
         // Fret Boards Element stays constant between menus.
@@ -88,6 +90,7 @@ fun MainStructure(viewModel: ChordViewModel) {
             navController = navController,
             startDestination = "extraction",
             modifier = Modifier
+                .padding(32.dp)
                 .weight(1f)
                 .fillMaxWidth()
                 .background(MaterialTheme.colorScheme.background),
@@ -99,8 +102,7 @@ fun MainStructure(viewModel: ChordViewModel) {
             composable("extraction") {
                 UploadChord(
                     viewModel,
-                    selectedFileUri,
-                    modifier = Modifier.padding(32.dp))
+                    selectedFileUri)
             }
             composable("playback") {
                 ChordPlayback(viewModel)
@@ -111,7 +113,7 @@ fun MainStructure(viewModel: ChordViewModel) {
         }
 
         NavMenu(navController)
-        BorderBar()
+        BorderBar(height=56)
     }
 }
 

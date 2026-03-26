@@ -113,8 +113,8 @@ def detectChords(chromagram, hopLength=512, sr=22050):
     for i in range(1, frameCount):
         if bestChords[i] != currentChord:
             endTime = frameTimes[i]
-            # Only add chords that last at least 0.1 seconds.
-            if endTime - startTime >= 0.1:
+            # Only add chords that last at least 0.25 seconds.
+            if endTime - startTime >= 0.25:
                 chords.append({
                     "chord": _chordNames[currentChord],
                     "start": float(startTime),

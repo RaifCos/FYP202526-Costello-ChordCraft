@@ -58,11 +58,11 @@ fun ActivityHeader(
 }
 
 @Composable
-fun BorderBar(modifier: Modifier = Modifier) {
+fun BorderBar(height: Int, modifier: Modifier = Modifier) {
     Box(
         modifier = modifier
             .fillMaxWidth()
-            .height(56.dp)
+            .height(height.dp)
             .background(
                 brush = Brush.horizontalGradient(
                     colors = listOf(

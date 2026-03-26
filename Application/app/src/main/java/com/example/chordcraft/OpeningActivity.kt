@@ -39,7 +39,7 @@ class OpeningActivity : ComponentActivity() {
 
 @Composable
 fun OpeningStructure(
-    borderBar: @Composable () -> Unit = { BorderBar() }
+    borderBar: @Composable () -> Unit = { BorderBar(56) }
 ) {
     Column(
         modifier = Modifier.fillMaxSize(),
