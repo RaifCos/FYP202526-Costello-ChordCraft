@@ -37,10 +37,10 @@ def buildChromagram(stft, sr, fftWindowSize=4096):
     chromagram = np.zeros((12, n_frames))
     stuttgart = 440.0
     
-    # Map each Frequency bin to a Pitch Class, skipping low frequencies.
-    for bin_idx in range(n_bins):
+    # Map each Frequency bin to a Pitch Class, skipping out-of-range frequencies.
+    for bin_idx in range(1, n_bins): 
         freq = freqs[bin_idx]
-        if freq < 80:
+        if freq < 80 or freq > 5000:
             continue
         
         # Calculate MIDI number and get Pitch. 
@@ -60,11 +60,11 @@ def buildChromagram(stft, sr, fftWindowSize=4096):
 
 def main(audioPath):
     processStart = time.time()
-    y, sr = audioLoader.loadAudio(audioPath, targetSr=22050)
+    y, sr = audioLoader.loadAudio(audioPath, targetSr=44100)
     
     # Parameters for STFT.
-    fftWindowSize = 4096
-    hopLength = 512
+    fftWindowSize = 8192
+    hopLength = 256
     
     # Compute Short Time Fourier Transform and Build Chromagram to detect Chords.
     stft = ShortTimeFourierTransfomrm(y, sr, fftWindowSize=fftWindowSize, hopLength=hopLength)

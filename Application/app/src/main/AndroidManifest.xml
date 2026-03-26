@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools">
     <uses-permission android:name="android.permission.READ_MEDIA_AUDIO" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <application
         android:name=".ChordCraftApplication"
         android:allowBackup="true"
@@ -16,7 +17,8 @@
 
         <activity
             android:name=".OpeningActivity"
-            android:exported="true">
+            android:exported="true"
+            android:theme="@style/Theme.ChordCraft.Splash">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />

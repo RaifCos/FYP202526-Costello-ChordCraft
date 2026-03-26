@@ -1,10 +1,15 @@
 package com.example.chordcraft
 
+import android.Manifest
+import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
+import android.widget.Toast
 
 import androidx.activity.ComponentActivity
+import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.background
@@ -17,6 +22,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.core.content.ContextCompat
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -32,6 +38,7 @@ import com.example.chordcraft.components.CreateFretBoards
 import com.example.chordcraft.components.extractChords
 import com.example.chordcraft.components.filePickerLauncher
 import com.example.chordcraft.components.getFileName
+import com.example.chordcraft.components.liveRecordingHandler
 import com.example.chordcraft.components.playbackChords
 import com.example.chordcraft.ui.ActivityHeader
 import com.example.chordcraft.ui.BorderBar
@@ -61,9 +68,11 @@ fun MainStructure(viewModel: ChordViewModel) {
     val selectedFileUri = remember { mutableStateOf<Uri?>(null) }
 
     Column(
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier
+            .fillMaxSize()
+            .background(MaterialTheme.colorScheme.background)
     ) {
-        BorderBar()
+        BorderBar(height=28)
         ActivityHeader(navController)
 
         // Fret Boards Element stays constant between menus.
@@ -81,6 +90,7 @@ fun MainStructure(viewModel: ChordViewModel) {
             navController = navController,
             startDestination = "extraction",
             modifier = Modifier
+                .padding(32.dp)
                 .weight(1f)
                 .fillMaxWidth()
                 .background(MaterialTheme.colorScheme.background),
@@ -92,16 +102,18 @@ fun MainStructure(viewModel: ChordViewModel) {
             composable("extraction") {
                 UploadChord(
                     viewModel,
-                    selectedFileUri,
-                    modifier = Modifier.padding(32.dp))
+                    selectedFileUri)
             }
             composable("playback") {
                 ChordPlayback(viewModel)
             }
+            composable("live") {
+                LiveRecorder(viewModel)
+            }
         }
 
         NavMenu(navController)
-        BorderBar()
+        BorderBar(height=56)
     }
 }
 
@@ -111,12 +123,12 @@ fun UploadChord(
     selectedFileUri: MutableState<Uri?>,
     modifier: Modifier = Modifier
 ) {
-    // File Selection
+    // File Selection.
     val uri = selectedFileUri.value
     val context = LocalContext.current
     val launchFilePickerCall = filePickerLauncher(selectedFileUri)
 
-    // Model Selection
+    // Model Selection.
     val options = listOf("Simple", "Advanced")
     var selectedIndex by remember { mutableIntStateOf(0) }
     val isAdvanced = selectedIndex == 1
@@ -212,6 +224,84 @@ fun ChordPlayback(
                 text = "Play Audio",
                 color = MaterialTheme.colorScheme.onPrimary
             )
+        }
+    }
+}
+
+@Composable
+fun LiveRecorder(
+    viewModel: ChordViewModel,
+    modifier: Modifier = Modifier
+) {
+    val context = LocalContext.current
+    val scope = rememberCoroutineScope()
+
+    var isRecording by remember { mutableStateOf(false) }
+    var liveRecording by remember { mutableStateOf<kotlinx.coroutines.Job?>(null) }
+
+    // Get Permission for Recording.
+    val permissionLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { granted ->
+        if (!granted) {
+            Toast.makeText(context, "Microphone permission is required.", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    LaunchedEffect(Unit) {
+        if (ContextCompat.checkSelfPermission
+                (context, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED)
+        { permissionLauncher.launch(Manifest.permission.RECORD_AUDIO) }
+    }
+
+    Column(
+        verticalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterVertically),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = modifier.fillMaxSize()
+    ) {
+        Text(
+            text = if (isRecording)
+                "Listening for Chords..."
+            else
+                "Start playing and hear what chord you're playing in real time!",
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onBackground
+        )
+
+        Button(
+            onClick = {
+                // Toggle Recording Mode.
+                isRecording = !isRecording
+                if (isRecording) {
+                    // Start Recording (If audio permission is granted).
+                    if (ContextCompat.checkSelfPermission(context, Manifest.permission.RECORD_AUDIO)
+                        != PackageManager.PERMISSION_GRANTED
+                    ) {
+                        permissionLauncher.launch(Manifest.permission.RECORD_AUDIO)
+                        return@Button
+                    }
+                    // Start Live Recording Coroutine.
+                    liveRecording = scope.launch(Dispatchers.IO) {
+                        liveRecordingHandler(context, viewModel)
+                    }
+                } else {
+                    // Stop Recording.
+                    liveRecording?.cancel()
+                    liveRecording = null
+                }
+            }
+        ) {
+            Text(
+                text = if (isRecording) "Stop Recording" else "Start Recording",
+                color = MaterialTheme.colorScheme.onPrimary
+            )
+        }
+    }
+
+    // Stop Live Recording Coroutine when menus are changed.
+    DisposableEffect(Unit) {
+        onDispose {
+            liveRecording?.cancel()
         }
     }
 }

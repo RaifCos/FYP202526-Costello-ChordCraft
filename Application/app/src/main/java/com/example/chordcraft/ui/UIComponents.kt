@@ -13,6 +13,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Create
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material3.Text
@@ -30,6 +31,7 @@ fun ActivityHeader(
     val title = when (navBackStackEntry?.destination?.route) {
         "extraction" -> "Chord Generation"
         "playback"   -> "Chord Playback"
+        "live"       -> "Live Chord Generation"
         else         -> ""
     }
 
@@ -56,11 +58,11 @@ fun ActivityHeader(
 }
 
 @Composable
-fun BorderBar(modifier: Modifier = Modifier) {
+fun BorderBar(height: Int, modifier: Modifier = Modifier) {
     Box(
         modifier = modifier
             .fillMaxWidth()
-            .height(56.dp)
+            .height(height.dp)
             .background(
                 brush = Brush.horizontalGradient(
                     colors = listOf(
@@ -106,6 +108,16 @@ fun NavMenu(navController: NavController) {
                 }
             ) {
                 Icon(imageVector = iconSet.PlayArrow, contentDescription = "Chord Playback")
+            }
+
+            Button(
+                onClick = {
+                    if (currentRoute != "live") {
+                        navController.navigate("live")
+                    }
+                }
+            ) {
+                Icon(imageVector = iconSet.Create, contentDescription = "Live Chords")
             }
         }
     }

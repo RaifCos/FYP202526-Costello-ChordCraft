@@ -21,6 +21,7 @@ import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 
 import com.example.chordcraft.ui.BorderBar
 import com.example.chordcraft.ui.moveActivity
@@ -30,6 +31,7 @@ private val ScreenPadding = 32.dp
 
 class OpeningActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
+        installSplashScreen()
         super.onCreate(savedInstanceState)
         setContent {
             ChordCraftTheme { OpeningStructure() }
@@ -39,7 +41,7 @@ class OpeningActivity : ComponentActivity() {
 
 @Composable
 fun OpeningStructure(
-    borderBar: @Composable () -> Unit = { BorderBar() }
+    borderBar: @Composable () -> Unit = { BorderBar(56) }
 ) {
     Column(
         modifier = Modifier.fillMaxSize(),
