@@ -38,7 +38,7 @@ import com.example.chordcraft.components.CreateFretBoards
 import com.example.chordcraft.components.extractChords
 import com.example.chordcraft.components.filePickerLauncher
 import com.example.chordcraft.components.getFileName
-import com.example.chordcraft.components.liveRecordLoop
+import com.example.chordcraft.components.liveRecordingHandler
 import com.example.chordcraft.components.playbackChords
 import com.example.chordcraft.ui.ActivityHeader
 import com.example.chordcraft.ui.BorderBar
