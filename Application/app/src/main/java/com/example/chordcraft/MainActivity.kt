@@ -1,10 +1,15 @@
 package com.example.chordcraft
 
+import android.Manifest
+import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
+import android.widget.Toast
 
 import androidx.activity.ComponentActivity
+import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.background
@@ -17,6 +22,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.core.content.ContextCompat
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -32,6 +38,7 @@ import com.example.chordcraft.components.CreateFretBoards
 import com.example.chordcraft.components.extractChords
 import com.example.chordcraft.components.filePickerLauncher
 import com.example.chordcraft.components.getFileName
+import com.example.chordcraft.components.liveRecordLoop
 import com.example.chordcraft.components.playbackChords
 import com.example.chordcraft.ui.ActivityHeader
 import com.example.chordcraft.ui.BorderBar
@@ -98,6 +105,9 @@ fun MainStructure(viewModel: ChordViewModel) {
             composable("playback") {
                 ChordPlayback(viewModel)
             }
+            composable("live") {
+                LiveRecorder(viewModel)
+            }
         }
 
         NavMenu(navController)
@@ -111,12 +121,12 @@ fun UploadChord(
     selectedFileUri: MutableState<Uri?>,
     modifier: Modifier = Modifier
 ) {
-    // File Selection
+    // File Selection.
     val uri = selectedFileUri.value
     val context = LocalContext.current
     val launchFilePickerCall = filePickerLauncher(selectedFileUri)
 
-    // Model Selection
+    // Model Selection.
     val options = listOf("Simple", "Advanced")
     var selectedIndex by remember { mutableIntStateOf(0) }
     val isAdvanced = selectedIndex == 1
@@ -210,6 +220,34 @@ fun ChordPlayback(
         Button({ playbackChords(context, chordList) }) {
             Text(
                 text = "Play Audio",
+                color = MaterialTheme.colorScheme.onPrimary
+            )
+        }
+    }
+}
+
+@Composable
+fun LiveRecorder(
+    viewModel: ChordViewModel,
+    modifier: Modifier = Modifier
+) {
+    Column(
+        verticalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterVertically),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = modifier.fillMaxSize()
+    ) {
+        Text(
+            text = "Play Music and get your chords in realtime!",
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onBackground
+        )
+
+        Button(
+            onClick = {
+            }
+        ) {
+            Text(
+                text = "Start Recording",
                 color = MaterialTheme.colorScheme.onPrimary
             )
         }
