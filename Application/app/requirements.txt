@@ -1,1 +1,2 @@
 numpy==1.26.2
+miniaudio==1.59.0
