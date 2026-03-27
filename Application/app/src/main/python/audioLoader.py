@@ -26,19 +26,14 @@ def loadAudio(audioPath, targetSr=22050):
         if nChannels > 1:
             y = y.reshape(-1, nChannels).mean(axis=1)
 
-    # Load WAV Audio using wave.
+    # Load WAV Audio using miniaudio.
     elif audioFormat == 'wav':
-        with wave.open(audioPath, 'rb') as wf:
-            nChannels = wf.getnchannels()
-            sampWidth = wf.getsampwidth()
-            sr = wf.getframerate()
-            rawData = wf.readframes(wf.getnframes())
-        if sampWidth == 1:
-            y = (np.frombuffer(rawData, dtype=np.uint8).astype(np.float32) - 128.0) / 128.0
-        elif sampWidth == 2:
-            y = np.frombuffer(rawData, dtype=np.int16).astype(np.float32) / 32768.0
-        elif sampWidth == 4:
-            y = np.frombuffer(rawData, dtype=np.int32).astype(np.float32) / 2147483648.0
+        decoded = miniaudio.wav_read_file_f32(audioPath)
+        y = np.array(decoded.samples, dtype=np.float32)
+        sr = decoded.sample_rate
+        nChannels = decoded.nchannels
+        if nChannels > 1:
+            y = y.reshape(-1, nChannels).mean(axis=1)
 
     else:
         raise ValueError(f"{audioPath} is not in a supported audio format.")
