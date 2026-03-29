@@ -51,7 +51,7 @@ suspend fun liveRecordingHandler(context: Context, viewModel: ChordViewModel) {
 
             // Write Recording Data to WAV file.
             val tempWav = File(context.cacheDir, "live_chunk.wav")
-            writeWav(pcmBuffer, tempWav)  // from ChordAudioRenderer.kt
+            writeWav(pcmBuffer, tempWav)
 
             // Run ACR Model.
             val chords = extractChords(true, uri = Uri.fromFile(tempWav), context)
