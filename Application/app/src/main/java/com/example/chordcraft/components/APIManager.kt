@@ -39,9 +39,13 @@ fun callAPI(context: Context, uri: Uri): JSONObject {
 
         // Throw Exception if API fails.
         if (!response.isSuccessful) {
-            val detail = runCatching { JSONObject(body).getString("detail") }
-                .getOrDefault(body.ifBlank { "Unknown error" })
-            throw Exception("API Error ${response.code}: $detail")
+            val detail = runCatching {
+                val json = JSONObject(body)
+                json.optString("detail").ifBlank { null }
+                    ?: json.optString("message").ifBlank { null }
+                    ?: body
+            }.getOrDefault(body.ifBlank { "Unknown error" })
+            throw Exception("The Chord Extraction API encountered an error.\nTry again shortly, or use an alternative model.\nError Code ${response.code}: $detail")
         }
 
         // Process result into a format that can be converted into JSON.
