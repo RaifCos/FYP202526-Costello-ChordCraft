@@ -37,11 +37,11 @@ fun callAPI(context: Context, uri: Uri): JSONObject {
     client.newCall(request).execute().use { response ->
         val body = response.body.string()
 
+        // Throw Exception if API fails.
         if (!response.isSuccessful) {
-            // Parse FastAPI's { "detail": "..." } error shape.
             val detail = runCatching { JSONObject(body).getString("detail") }
                 .getOrDefault(body.ifBlank { "Unknown error" })
-            throw Exception("API error ${response.code}: $detail")
+            throw Exception("API Error ${response.code}: $detail")
         }
 
         // Process result into a format that can be converted into JSON.
