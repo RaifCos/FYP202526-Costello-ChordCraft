@@ -31,7 +31,6 @@ fun CreateFretBoards(chordList: List<Chord>) {
         DefaultFretDisplay()
         return
     }
-
     val guitarChords = generateGuitarChords(chordList)
     LazyRow(
         modifier = Modifier
