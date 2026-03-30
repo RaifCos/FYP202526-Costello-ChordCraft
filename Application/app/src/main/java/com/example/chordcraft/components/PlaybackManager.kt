@@ -11,6 +11,9 @@ private const val CHANNELS = 2
 
 // Function to analyze provided Chordal data, and use it to render and play an Audio output.
 fun playbackChords(context: Context, chordList: List<Chord>) {
+
+    if (chordList.isEmpty()) { return }
+
     // Render Audio File and play.
     val chordAudioFile = File(context.cacheDir, "chordAudio.wav")
     renderChordAudio(context, chordList, chordAudioFile)

@@ -65,6 +65,7 @@ class MainActivity : ComponentActivity() {
 fun MainStructure(viewModel: ChordViewModel) {
     val navController = rememberNavController()
     val chordList by viewModel.chordList
+    val errorMessage by viewModel.errorMessage
     val selectedFileUri = remember { mutableStateOf<Uri?>(null) }
 
     Column(
@@ -82,7 +83,7 @@ fun MainStructure(viewModel: ChordViewModel) {
                 .fillMaxWidth()
                 .background(MaterialTheme.colorScheme.background)
         ) {
-            CreateFretBoards(chordList)
+            CreateFretBoards(chordList, errorMessage)
         }
 
         // Alternating Extraction/Playback menus.
@@ -185,12 +186,9 @@ fun UploadChord(
             onClick = {
                 val uri = selectedFileUri.value
                 if (uri != null) {
-                    if (isAdvanced) {
-                        scope.launch(Dispatchers.IO) {
-                            viewModel.chordList.value = extractChords(false, uri, context)
-                        }
-                    } else {
-                        viewModel.chordList.value = extractChords(true, uri, context)
+                    scope.launch(Dispatchers.IO) {
+                        viewModel.errorMessage.value = null
+                        viewModel.chordList.value = extractChords(!isAdvanced, uri, context, viewModel)
                     }
                 }
             }
