@@ -26,7 +26,13 @@ private const val FRETS  = 5
 
 // Function to generate a scrolling row of Guitar Chords.
 @Composable
-fun CreateFretBoards(chordList: List<Chord>) {
+fun CreateFretBoards(chordList: List<Chord>, errorMessage: String? = null) {
+
+    if (errorMessage != null) {
+        ErrorDisplay(errorMessage)
+        return
+    }
+
     if (chordList.isEmpty()) {
         DefaultFretDisplay()
         return
@@ -280,6 +286,33 @@ fun DefaultFretDisplay() {
     ) {
         Text(
             text       = "Your Chords will appear here.\nFollow the instructions below to generate them.",
+            color      = DotText,
+            fontSize   = 14.sp,
+            fontWeight = FontWeight.Bold,
+            textAlign  = TextAlign.Center
+        )
+    }
+}
+
+@Composable
+fun ErrorDisplay(message: String) {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(266.dp)
+            .background(
+                brush = Brush.verticalGradient(
+                    colors = listOf(
+                        FretBackTop,
+                        FretBackBottom
+                    )
+                )
+            )
+            .padding(horizontal = 16.dp),
+        contentAlignment = Alignment.Center
+    ) {
+        Text(
+            text       = message,
             color      = DotText,
             fontSize   = 14.sp,
             fontWeight = FontWeight.Bold,

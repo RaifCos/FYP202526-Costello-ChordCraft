@@ -20,9 +20,10 @@ data class Chord(
 
 class ChordViewModel : ViewModel() {
     var chordList = mutableStateOf<List<Chord>>(emptyList())
+    var errorMessage = mutableStateOf<String?>(null)
 }
 
-fun extractChords(localCall: Boolean, uri: Uri, context: Context): List<Chord> {
+fun extractChords(localCall: Boolean, uri: Uri, context: Context, viewModel: ChordViewModel): List<Chord> {
     try {
         val modelOutput: JSONObject
         if (localCall) {
@@ -55,7 +56,7 @@ fun extractChords(localCall: Boolean, uri: Uri, context: Context): List<Chord> {
 
         return chordList
     } catch (e: Exception) {
-        errorHandler(context, "There was an issue running the ACR model: ", e)
+        viewModel.errorMessage.value = e.message ?: "Unknown error"
         return emptyList()
     }
 }

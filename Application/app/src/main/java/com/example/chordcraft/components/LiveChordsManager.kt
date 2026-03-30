@@ -54,7 +54,7 @@ suspend fun liveRecordingHandler(context: Context, viewModel: ChordViewModel) {
             writeWav(pcmBuffer, tempWav)
 
             // Run ACR Model.
-            val chords = extractChords(true, uri = Uri.fromFile(tempWav), context)
+            val chords = extractChords(true, uri = Uri.fromFile(tempWav), context, viewModel)
             withContext(Dispatchers.Main) {
                 viewModel.chordList.value = chords
             }
