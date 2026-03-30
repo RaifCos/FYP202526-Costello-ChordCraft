@@ -185,12 +185,8 @@ fun UploadChord(
             onClick = {
                 val uri = selectedFileUri.value
                 if (uri != null) {
-                    if (isAdvanced) {
-                        scope.launch(Dispatchers.IO) {
-                            viewModel.chordList.value = extractChords(false, uri, context)
-                        }
-                    } else {
-                        viewModel.chordList.value = extractChords(true, uri, context)
+                    scope.launch(Dispatchers.IO) {
+                        viewModel.chordList.value = extractChords(!isAdvanced, uri, context)
                     }
                 }
             }
