@@ -21,6 +21,7 @@ data class Chord(
 class ChordViewModel : ViewModel() {
     var chordList = mutableStateOf<List<Chord>>(emptyList())
     var errorMessage = mutableStateOf<String?>(null)
+    var isLoading = mutableStateOf(false)
 }
 
 fun extractChords(localCall: Boolean, uri: Uri, context: Context, viewModel: ChordViewModel): List<Chord> {

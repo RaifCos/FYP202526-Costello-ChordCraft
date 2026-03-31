@@ -124,6 +124,9 @@ fun UploadChord(
     selectedFileUri: MutableState<Uri?>,
     modifier: Modifier = Modifier
 ) {
+    // View Model.
+    val isLoading by viewModel.isLoading
+
     // File Selection.
     val uri = selectedFileUri.value
     val context = LocalContext.current
@@ -188,12 +191,15 @@ fun UploadChord(
                 if (uri != null) {
                     scope.launch(Dispatchers.IO) {
                         viewModel.errorMessage.value = null
+                        viewModel.isLoading.value = true
                         viewModel.chordList.value = extractChords(!isAdvanced, uri, context, viewModel)
+                        viewModel.isLoading.value = false
                     }
                 }
-            }
+            },
+            enabled = !isLoading
         ) {
-            Text("Generate Chords!")
+            Text(if (isLoading) "Running Model..." else "Generate Chords!")
         }
     }
 }
