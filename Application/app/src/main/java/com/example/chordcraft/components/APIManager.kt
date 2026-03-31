@@ -5,10 +5,16 @@ import android.net.Uri
 import okhttp3.*
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.RequestBody.Companion.toRequestBody
+import kotlin.time.Duration.Companion.seconds
 import org.json.JSONObject
 
 fun callAPI(context: Context, uri: Uri): JSONObject {
-    val client = OkHttpClient()
+    val client = OkHttpClient.Builder()
+        .connectTimeout(30.seconds)
+        .readTimeout(150.seconds)
+        .writeTimeout(60.seconds)
+        .build()
+
 
     val stream = context.contentResolver.openInputStream(uri)
         ?: throw Exception("Couldn't open file.")
