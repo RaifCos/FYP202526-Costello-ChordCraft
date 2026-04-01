@@ -70,10 +70,11 @@ def getChordTemplates(chordsJson):
             chordIndex = _chordNames.index(chordName)
             template = _chordTemplates[chordIndex]
 
-            rootIndex = chordIndex % 12
-            rootMidi = 60 + rootIndex
+            rootName = chordName.split(":")[0]
+            rootIndex = roots.index(rootName)
+            rootMidi = 48 + rootIndex
 
-            allNotes = [60 + j for j, val in enumerate(template) if val > 0.0]
+            allNotes = [48 + j for j, val in enumerate(template) if val > 0.0]
             midiIntervals = sorted([note if note >= rootMidi else note + 12 for note in allNotes])
         else:
             midiIntervals = []
