@@ -5,6 +5,10 @@ import android.media.MediaPlayer
 import java.io.File
 import kotlin.math.roundToInt
 
+// Soundbank Values
+private const val LOWEST_MIDI = 60
+private const val HIGHEST_MIDI = 84
+
 // Define Audio Format Constants.
 private const val SAMPLE_RATE = 48000
 private const val CHANNELS = 2
@@ -66,7 +70,9 @@ fun renderChordAudio(context: Context, chordList: List<Chord>, outputFile: File)
 }
 // Function to load a note WAV from the Soundbank.
 private fun loadSoundbankWAV(context: Context, midiNote: Int): FloatArray? {
-    val assetPath = "soundbank/MIDI_$midiNote.wav"
+    var note = midiNote
+    if (note !in LOWEST_MIDI..HIGHEST_MIDI) { note = validateMIDI(note) }
+    val assetPath = "soundbank/MIDI_$note.wav"
     try {
         context.assets.open(assetPath).use { inputStream ->
             val bytes = inputStream.readBytes()
@@ -76,4 +82,10 @@ private fun loadSoundbankWAV(context: Context, midiNote: Int): FloatArray? {
         android.util.Log.w("ChordAudioRenderer", "$assetPath not found.")
         return null
     }
+}
+private fun validateMIDI(midiNote: Int): Int {
+    var note = midiNote
+    while(note < LOWEST_MIDI) { note += 12 }
+    while(note < HIGHEST_MIDI) { note -= 12 }
+    return note
 }
