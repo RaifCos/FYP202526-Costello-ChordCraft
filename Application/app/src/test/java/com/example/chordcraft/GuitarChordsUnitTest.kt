@@ -1,6 +1,5 @@
 package com.example.chordcraft
 
-import com.example.chordcraft.components.Chord
 import com.example.chordcraft.components.GuitarNote
 import com.example.chordcraft.components.generateGuitarChords
 import com.example.chordcraft.components.getCandidatePositions

@@ -75,6 +75,7 @@ fun getFileName(uri: Uri): String {
 
 fun cacheFileFromURI(context: Context, uri: Uri, name: String): File {
     val tempFile = File(context.cacheDir, name)
+
     context.contentResolver.openInputStream(uri)?.use { input ->
         tempFile.outputStream().use { output -> input.copyTo(output) }
     }
@@ -83,6 +84,8 @@ fun cacheFileFromURI(context: Context, uri: Uri, name: String): File {
 
 // Function to parse WAV data and convert to Float for sample mixing.
 fun readWAV(bytes: ByteArray): FloatArray? {
+    if(bytes.isEmpty()) { return null }
+
     val buf = ByteBuffer.wrap(bytes).order(ByteOrder.LITTLE_ENDIAN)
 
     // Check format header to confirm the file is WAV.
