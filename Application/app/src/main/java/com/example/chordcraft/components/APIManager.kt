@@ -39,26 +39,35 @@ fun callAPI(context: Context, uri: Uri): JSONObject {
         .post(requestBody)
         .build()
 
-    // Call API and check response code.
-    client.newCall(request).execute().use { response ->
-        val body = response.body.string()
+    // Catch any OkHttp Errors.
+    val response = try {
+        client.newCall(request).execute()
+    } catch (e: java.net.UnknownHostException) {
+        throw Exception("Unable to connect to the server.\nPlease check your connection and try again.")
+    } catch (e: java.net.SocketTimeoutException) {
+        throw Exception("The request timed out.\nPlease try again shortly.")
+    } catch (e: java.io.IOException) {
+        throw Exception("A network error occurred: ${e.message}\nPlease check your connection and try again.")
+    }
 
-        // Throw Exception if API fails.
-        if (!response.isSuccessful) {
+    // Process API Response
+    response.use {
+        val body = it.body.string()
+
+        if (!it.isSuccessful) {
             val detail = runCatching {
                 val json = JSONObject(body)
                 json.optString("detail").ifBlank { null }
                     ?: json.optString("message").ifBlank { null }
                     ?: body
             }.getOrDefault(body.ifBlank { "Unknown error" })
-            throw Exception("The Chord Extraction API encountered an error.\nTry again shortly, or use an alternative model.\nError Code ${response.code}: $detail")
+            throw Exception("The Chord Extraction API encountered an error.\nTry again shortly, or use an alternative model.\nError Code ${it.code}: $detail")
         }
 
-        // Process result into a format that can be converted into JSON.
-        val processedResult = body.trim().let {
-            if (it.startsWith("\"") && it.endsWith("\""))
-                it.substring(1, it.length - 1).replace("\\\"", "\"").replace("\\\\", "\\")
-            else it
+        val processedResult = body.trim().let { b ->
+            if (b.startsWith("\"") && b.endsWith("\""))
+                b.substring(1, b.length - 1).replace("\\\"", "\"").replace("\\\\", "\\")
+            else b
         }
         return JSONObject(processedResult)
     }
