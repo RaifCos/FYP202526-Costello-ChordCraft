@@ -65,7 +65,7 @@ fun DrawFretBoard(guitarChord: GuitarChord?) {
     val cellW: Dp = 36.dp
     val cellH: Dp = 32.dp
     val dotRadius: Dp = 10.dp
-    val stringNames = listOf("e", "B", "G", "D", "A", "E")
+    val stringNames = listOf("E", "A", "D", "G", "B", "e")
 
     // Chose Starting Fret.
     val startFret = if (guitarChord.minFret <= 1) 1 else guitarChord.minFret
@@ -101,7 +101,7 @@ fun DrawFretBoard(guitarChord: GuitarChord?) {
         // Mute/Open Indicators
         Row {
             Spacer(Modifier.width(18.dp))
-            for (string in 0 until STRINGS) {
+            for (string in (STRINGS-1) downTo 0) {
                 Box(
                     modifier = Modifier.width(cellW),
                     contentAlignment = Alignment.Center
@@ -149,7 +149,7 @@ fun DrawFretBoard(guitarChord: GuitarChord?) {
             }
 
             // String Columns:
-            for (string in 0 until STRINGS) {
+            for (string in (STRINGS-1) downTo 0) {
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                     for (row in 0 until FRETS) {
                         val fretNumber = startFret + row
@@ -165,8 +165,8 @@ fun DrawFretBoard(guitarChord: GuitarChord?) {
                                 drawCell(
                                     drawScope     = this,
                                     isNut         = isNut,
-                                    isFirstString = (string == 0),
-                                    isLastString  = (string == STRINGS - 1),
+                                    isFirstString = (string == 5),
+                                    isLastString  = (string == 0),
                                     cellW         = size.width,
                                     cellH         = size.height
                                 )
