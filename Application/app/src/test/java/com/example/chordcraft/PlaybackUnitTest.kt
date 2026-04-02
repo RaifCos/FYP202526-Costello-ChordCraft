@@ -2,7 +2,6 @@ package com.example.chordcraft
 
 import android.content.ContentResolver
 import android.content.Context
-import com.example.chordcraft.components.Chord
 import com.example.chordcraft.components.playbackChords
 import org.junit.Test
 import org.mockito.Mockito.mock
@@ -15,6 +14,6 @@ class PlaybackUnitTest {
     @Test
     fun playbackChords_NoChords() {
         mockContext = mock(Context::class.java)
-        playbackChords(mockContext, emptyList<Chord>())
+        playbackChords(mockContext, emptyList())
     }
 }
