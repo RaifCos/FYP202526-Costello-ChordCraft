@@ -118,7 +118,7 @@ fun getCandidatePositions(midiNote: Int): List<GuitarNote> {
 }
 
 // Use candidate notes to generate candidate chords, then find the best-fitting Chord.
-private fun findBestGuitarChord(chord: Chord, candidatesPerNote: List<List<GuitarNote>>): GuitarChord? {
+fun findBestGuitarChord(chord: Chord, candidatesPerNote: List<List<GuitarNote>>): GuitarChord? {
     var bestChord: GuitarChord? = null
 
     // Use a stack to store candidate chord notes.

@@ -11,12 +11,15 @@ import java.io.File
 
 class FileUnitTest {
 
-    private lateinit var mockContext: Context
-    private lateinit var mockContentResolver: ContentResolver
-
     @Test
     fun readWAV_EmptyBytes() {
         assertEquals(readWAV(byteArrayOf()), null)
+    }
+
+    @Test
+    fun readWAV_InvalidHeader() {
+        val notWav = byteArrayOf(0x00, 0x01, 0x02, 0x03)
+        assertEquals(readWAV(notWav), null)
     }
 
     @Test
