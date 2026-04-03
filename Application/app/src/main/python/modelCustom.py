@@ -4,58 +4,49 @@ import numpy as np
 import audioLoader
 import chordProcessing
 
-def ShortTimeFourierTransfomrm(y, sr, fftWindowSize=4096, hopLength=512):
-    # Define Window as Hann function. 
+def ShortTimeFourierTransform(y, sr, fftWindowSize=4096, hopLength=512):
     window = np.hanning(fftWindowSize)
-    
+
     # Calculate number of Frames.
     n_frames = 1 + (len(y) - fftWindowSize) // hopLength
-    
-    # Calculate Short Time Fourier Transform.
-    stft = np.zeros((fftWindowSize // 2 + 1, n_frames), dtype=complex)
-    for i in range(n_frames):
-        start = i * hopLength
-        end = start + fftWindowSize
-        
-        # Extract frame and apply Hann Window.
-        frame = y[start:end] * window
-        
-        # Compute Fast Fourier Transform, removing negative frequencies.
-        fft = np.fft.fft(frame)
-        stft[:, i] = fft[:fftWindowSize // 2 + 1]
-    
+
+    # Build 2D Array using frames to reduce memory usage.
+    shape = (n_frames, fftWindowSize)
+    strides = (y.strides[0] * hopLength, y.strides[0])
+    frames = np.lib.stride_tricks.as_strided(y, shape=shape, strides=strides)
+
+    # Apply Window and compute FFT.
+    stft = np.fft.rfft(frames * window, axis=1).T.astype(np.complex64)
     return stft
 
 def buildChromagram(stft, sr, fftWindowSize=4096):
     n_bins, n_frames = stft.shape
-    
-    # Get Magnitude Spectrum and Frequency Bins.
-    mag = np.abs(stft)
-    freqs = np.fft.fftfreq(fftWindowSize, 1/sr)[:n_bins]
-    
-    # Set Chromagram to use Western 12-Tone scale and define Stuttgart Pitch.
-    chromagram = np.zeros((12, n_frames))
+
+    # Get Frequencies.
+    freqs = np.fft.rfftfreq(fftWindowSize, 1 / sr)
     stuttgart = 440.0
-    
-    # Map each Frequency bin to a Pitch Class, skipping out-of-range frequencies.
-    for bin_idx in range(1, n_bins): 
-        freq = freqs[bin_idx]
-        if freq < 80 or freq > 5000:
-            continue
-        
-        # Calculate MIDI number and get Pitch. 
-        midi = 69 + 12 * np.log2(freq / stuttgart)
-        pitch = int(np.round(midi)) % 12
-        
-        # Add magnitude to corresponding Pitch Class.
-        chromagram[pitch, :] += mag[bin_idx, :]
-    
-    # Normalize.
-    for i in range(n_frames):
-        norm = np.linalg.norm(chromagram[:, i])
-        if norm > 0:
-            chromagram[:, i] /= norm
-    
+
+    # Compute Pitch Bins.
+    valid = (freqs >= 80) & (freqs <= 5000)
+    valid[0] = False
+
+    midi = np.where(valid, 69 + 12 * np.log2(np.where(valid, freqs, 1.0) / stuttgart), -1.0)
+    pitch_bins = np.where(valid, np.round(midi).astype(np.int32) % 12, -1)
+
+    # Accumulate Magnitudes into Chromagram.
+    mag = np.abs(stft)
+    chromagram = np.zeros((12, n_frames), dtype=np.float32)
+
+    for pitch in range(12):
+        mask = pitch_bins == pitch
+        if mask.any():
+            chromagram[pitch] = mag[mask].sum(axis=0)
+
+    # Normalise Frames.
+    norms = np.linalg.norm(chromagram, axis=0, keepdims=True)
+    norms[norms == 0] = 1
+    chromagram /= norms
+
     return chromagram
 
 def main(audioPath):
@@ -63,12 +54,15 @@ def main(audioPath):
     y, sr = audioLoader.loadAudio(audioPath, targetSr=44100)
     
     # Parameters for STFT.
-    fftWindowSize = 8192
-    hopLength = 256
+    fftWindowSize = 4096
+    hopLength = 512
     
     # Compute Short Time Fourier Transform and Build Chromagram to detect Chords.
-    stft = ShortTimeFourierTransfomrm(y, sr, fftWindowSize=fftWindowSize, hopLength=hopLength)
+    stft = ShortTimeFourierTransform(y, sr, fftWindowSize=fftWindowSize, hopLength=hopLength)
     chromagram = buildChromagram(stft, sr, fftWindowSize=fftWindowSize)
+    del stft
+    import gc
+    gc.collect()
     chords = chordProcessing.detectChords(chromagram, hopLength=hopLength, sr=sr)
 
     # Print Output JSON.

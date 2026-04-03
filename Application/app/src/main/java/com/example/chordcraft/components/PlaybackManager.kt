@@ -86,6 +86,6 @@ private fun loadSoundbankWAV(context: Context, midiNote: Int): FloatArray? {
 private fun validateMIDI(midiNote: Int): Int {
     var note = midiNote
     while(note < LOWEST_MIDI) { note += 12 }
-    while(note < HIGHEST_MIDI) { note -= 12 }
+    while(note > HIGHEST_MIDI) { note -= 12 }
     return note
 }
