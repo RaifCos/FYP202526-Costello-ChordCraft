@@ -27,10 +27,20 @@ fun callAPI(context: Context, uri: Uri): JSONObject {
 
     val mimeType = context.contentResolver.getType(uri) ?: "application/octet-stream"
 
+    val bytes = stream.use { it.readBytes() }
+
+    if (bytes.isEmpty()) {
+        throw Exception("File cannot be read or is empty.")
+    }
+
     // Form Request Body from Audio File.
     val requestBody = MultipartBody.Builder()
         .setType(MultipartBody.FORM)
-        .addFormDataPart("file", fileName, stream.readBytes().toRequestBody(mimeType.toMediaType()))
+        .addFormDataPart(
+            "file",
+            fileName,
+            bytes.toRequestBody(mimeType.toMediaType())
+        )
         .build()
 
     // Build Request from URL and Request Body.

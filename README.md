@@ -16,8 +16,13 @@ The "Lite" Model is coded in Python scripts, which are managed within the applic
 
 Finally, the model calls ```chordProcessing.py``` to get the final output. The module first pre-generates Chord Templates based on different sets of intervals against a set of root notes, before dividing the Chormagram into frames, and comapring the frequency intervals to the intervals marked in the templates. The results are returned as a JSON-formatted string, which includes each chord detected in the audio processed, with timestamps denoting when in the audio the chord begins and ends. 
 
+These reults are then dynamically converted into their guitar chord representations, before being displayed to the user in an intuitave scrolling row UI element.
+
 ## :musical_note: Chord Playback Feature
 The ChordCraft application has a "Chord Playback" feature that can generate a musical-recreation of the audio provided by the user. By analysing the chordal details returned by the ACR model, the app can use and combine individual notes from a preset soundbank to create a piano playback of the music uploaded by the user. The Chord Playback feature can be used to transcribe music from other instruments onto the piano, verify the accuracy of the ACR model, and provide users with a version of their audio without any background noise. 
+
+## :microphone: Live Chord Generation
+As an alternative apporach to uploading a pre-existing audio file, users can also enable the live chord generation feature, which takes the audio input directly from the user's device microphone and generates chordal data using the local model in real time. While this feature does not support using the chord-CNN-LSTM API, it allows users to get the chordal infromation of they music they are playing in real-time. 
 
 ## :round_pushpin: About this Application
 The ChordCraft is being developed as part of University of Galway CT413 Final Year Project module FY25/26 with the project title "ChordCraft - Audio-to-Guitar Chords". 
