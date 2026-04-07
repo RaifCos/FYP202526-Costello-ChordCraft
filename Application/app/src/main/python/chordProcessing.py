@@ -1,7 +1,7 @@
 import numpy as np
 import json
 
-roots = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"]
+roots = ["C", "C#", "D", "Eb", "E", "F", "F#", "G", "Ab", "A", "Bb", "B"]
 _chordNames, _chordTemplates = None, None
 
 def buildChordTemplates():
@@ -59,7 +59,8 @@ def getChordTemplates(chordsJson):
     output = []
 
     for chord in chords:
-        chordName = chord["chord"]
+        rawChordName = chord["chord"]
+        chordName = rawChordName.split("/")[0]
 
         # Skip "N" Chords. 
         if chordName == "N":
